@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RakRunnin Shop - Stack Racks Fast</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #ffffff;
+      color: #1a252f;
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    #captcha-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+    #captcha-screen h2 {
+      color: #003087;
+      font-size: 2.3em;
+      margin-bottom: 15px;
+    }
+    #captcha-screen p {
+      font-size: 1.3em;
+      color: #1a252f;
+      margin-bottom: 15px;
+    }
+    #captcha-screen input {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #003087;
+      border-radius: 8px;
+      background: #f8f9fa;
+      color: #1a252f;
+      font-size: 1em;
+      width: 180px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    #captcha-screen input:focus {
+      border-color: #005ea2;
+      box-shadow: 0 0 6px rgba(0, 94, 162, 0.4);
+      outline: none;
+    }
+    #captcha-screen button {
+      background: #003087;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    #captcha-screen button:hover {
+      background: #005ea2;
+      transform: scale(1.05);
+    }
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.98);
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #003087;
+      font-size: 1.8em;
+    }
+    #loading-screen p {
+      margin: 10px 0;
+    }
+    .rak-runner {
+      width: 100px;
+      height: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+    .runner {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M25 10a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 5v15m-10-10h20m-15 10v10m-5-5h10" stroke="%23003087" stroke-width="3" fill="none"/></svg>') no-repeat center;
+      animation: run 2s infinite linear;
+    }
+    .racks {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><rect x="5" y="5" width="20" height="20" fill="%23003087"/><text x="15" y="20" font-size="12" fill="%23fff" text-anchor="middle">$</text></svg>') no-repeat center;
+      animation: chase 2s infinite linear;
+    }
+    @keyframes run {
+      0% { transform: translateX(-100px); }
+      100% { transform: translateX(200px); }
+    }
+    @keyframes chase {
+      0% { transform: translateX(-150px) translateY(20px); }
+      100% { transform: translateX(150px) translateY(20px); }
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .menu-icon {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      font-size: 1.8em;
+      color: #003087;
+      cursor: pointer;
+      z-index: 100;
+      transition: color 0.3s, transform 0.2s;
+    }
+    .menu-icon:hover {
+      color: #005ea2;
+      transform: scale(1.1);
+    }
+    .sidebar {
+      width: 220px;
+      background: #fff;
+      padding: 15px;
+      position: fixed;
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #003087 #f8f9fa;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      z-index: 99;
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    .sidebar h3 {
+      color: #003087;
+      font-size: 1.6em;
+      margin: 10px 0;
+      text-align: center;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      margin: 10px 0;
+      color: #1a252f;
+      font-size: 1em;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s, color 0.3s, transform 0.2s;
+      pointer-events: auto;
+    }
+    .sidebar li:hover {
+      background: #e6f0fa;
+      color: #003087;
+      transform: translateX(5px);
+    }
+    .sidebar li::before {
+      content: 'Credit Card';
+      font-size: 1.2em;
+    }
+    .sidebar .sold-out {
+      color: #999;
+      cursor: default;
+      background: none;
+      transform: none;
+      pointer-events: none;
+    }
+    .sidebar .sold-out::before {
+      content: 'Prohibited';
+    }
+    .main-content {
+      margin-left: 0;
+      padding: 15px;
+      width: 100%;
+      background: #fff;
+    }
+    .user-info {
+      position: fixed;
+      top: 15px;
+      left: 50px;
+      color: #003087;
+      font-size: 1em;
+      z-index: 100;
+      background: #e6f0fa;
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+    .account-section {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px auto;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+    .account-section input {
+      padding: 8px;
+      margin: 6px 0;
+      border: 1px solid #003087;
+      border-radius: 8px;
+      background: #f8f9fa;
+      color: #1a252f;
+      font-size: 0.9em;
+      width: 100%;
+      max-width: 200px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .account-section input:focus {
+      border-color: #005ea2;
+      box-shadow: 0 0 6px rgba(0, 94, 162, 0.4);
+      outline: none;
+    }
+    .account-section button {
+      background: #003087;
+      color: #fff;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin: 6px 4px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .account-section button:hover {
+      background: #005ea2;
+      transform: scale(1.05);
+    }
+    .header {
+      background: #003087;
+      color: #fff;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+    .header p {
+      font-size: 0.9em;
+      margin: 6px 0;
+    }
+    .navbar {
+      background: #e6f0fa;
+      padding: 8px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-radius: 8px;
+      margin: 12px 0;
+      touch-action: pan-x;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .navbar button {
+      background: #003087;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .navbar button:hover, .navbar button:active {
+      background: #005ea2;
+      transform: scale(1.05);
+    }
+    .search-bar {
+      margin: 12px auto;
+      max-width: 400px;
+      position: relative;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 8px 25px 8px 8px;
+      border: 1px solid #003087;
+      border-radius: 8px;
+      background: #f8f9fa;
+      color: #1a252f;
+      font-size: 0.9em;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .search-bar input:focus {
+      border-color: #005ea2;
+      box-shadow: 0 0 6px rgba(0, 94, 162, 0.4);
+      outline: none;
+    }
+    .search-bar::after {
+      content: 'Search';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #003087;
+      font-size: 1em;
+    }
+    .section {
+      margin: 15px 0;
+    }
+    .section h2 {
+      color: #003087;
+      font-size: 1.6em;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .item-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      padding: 12px;
+    }
+    .item {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      touch-action: manipulation;
+    }
+    .item:hover, .item:active {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .item img {
+      width: 100%;
+      max-width: 120px;
+      height: auto;
+      border-radius: 8px;
+      margin: 0 auto 8px;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .item img:hover, .item img:active {
+      transform: scale(1.1);
+    }
+    .item h3 {
+      margin: 6px 0;
+      color: #003087;
+      font-size: 1.2em;
+    }
+    .item p {
+      margin: 4px 0;
+      font-size: 0.8em;
+      color: #1a252f;
+    }
+    .item .sold-out {
+      color: #999;
+      font-weight: bold;
+      font-size: 0.9em;
+      text-align: center;
+    }
+    .item .stars {
+      color: #f5c518;
+      font-size: 1.1em;
+      margin: 6px 0;
+      text-align: center;
+      font-weight: bold;
+    }
+    .buy-btn {
+      background: #003087;
+      color: #fff;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin: 6px auto;
+      display: block;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .buy-btn:hover, .buy-btn:active {
+      background: #005ea2;
+      transform: scale(1.05);
+    }
+    .buy-btn:disabled {
+      background: #999;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .job-section {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px auto;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .job-section a {
+      color: #003087;
+      text-decoration: none;
+      font-size: 0.9em;
+      transition: color 0.3s, text-decoration 0.3s;
+    }
+    .job-section a:hover {
+      color: #005ea2;
+      text-decoration: underline;
+    }
+    .cart-icon {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      font-size: 1.4em;
+      color: #003087;
+      cursor: pointer;
+      z-index: 100;
+      transition: color 0.3s, transform 0.2s;
+    }
+    .cart-icon:hover, .cart-icon:active {
+      color: #005ea2;
+      transform: scale(1.1);
+    }
+    .cart-section {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      margin: 15px auto;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+    .cart-item {
+      background: #f8f9fa;
+      padding: 6px;
+      margin: 6px 0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 2px solid #003087;
+    }
+    .cart-item p {
+      margin: 0;
+      font-size: 0.8em;
+    }
+    .cart-item button {
+      background: #003087;
+      color: #fff;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.7em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .cart-item button:hover, .cart-item button:active {
+      background: #005ea2;
+      transform: scale(1.05);
+    }
+    #cart-total {
+      font-weight: bold;
+      color: #003087;
+      margin: 10px 0;
+      font-size: 1.1em;
+    }
+    .theme-toggle {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      background: #003087;
+      color: #fff;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.7em;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .theme-toggle:hover, .theme-toggle:active {
+      background: #005ea2;
+      transform: scale(1.05);
+    }
+    .popup {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #003087;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: none;
+      animation: popupFade 3s ease-in-out;
+      font-weight: bold;
+      font-size: 0.9em;
+      max-width: 300px;
+      text-align: center;
+    }
+    .popup p {
+      margin: 0;
+    }
+    @keyframes popupFade {
+      0% { opacity: 0; transform: translateY(10px); }
+      20% { opacity: 1; transform: translateY(0); }
+      80% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(10px); }
+    }
+    .filter-slider {
+      margin: 12px auto;
+      max-width: 400px;
+      padding: 8px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+    .filter-slider label {
+      display: block;
+      margin-bottom: 6px;
+      color: #003087;
+      font-size: 0.9em;
+    }
+    .filter-slider input[type="range"] {
+      width: 100%;
+      accent-color: #003087;
+    }
+    .btc-info {
+      background: #fff3cd;
+      color: #856404;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px auto;
+      max-width: 400px;
+      text-align: center;
+      font-size: 0.85em;
+      border: 1px solid #ffeaa7;
+    }
+    .btc-address {
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 8px;
+      border-radius: 4px;
+      word-break: break-all;
+      margin: 8px 0;
+      font-size: 0.9em;
+    }
+    @media (max-width: 768px) {
+      .sidebar { width: 180px; }
+      .item-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="captcha-screen">
+    <h2>Stack Racks - Verify</h2>
+    <p id="captcha-question"></p>
+    <input type="text" id="captcha-input" placeholder="Answer">
+    <button onclick="verifyCaptcha()">Submit</button>
+  </div>
+  <div id="loading-screen">
+    <div class="rak-runner">
+      <div class="runner"></div>
+      <div class="racks"></div>
+    </div>
+    <p>Stackin’ Racks...</p>
+  </div>
+  <div class="popup" id="deal-popup">
+    <p>50% OFF ALL CARDS! DM @rakrunnin NOW!</p>
+  </div>
+  <div class="container">
+    <div class="menu-icon" onclick="toggleMenu()">Menu</div>
+    <div class="cart-icon" onclick="showCart()">Cart</div>
+    <div class="sidebar" id="sidebar">
+      <h3>RakRunnin Shop</h3>
+      <ul id="sidebar-menu">
+        <!-- Dynamically populated -->
+      </ul>
+    </div>
+    <div class="main-content" id="main-content">
+      <div class="user-info" id="user-info"></div>
+      <div class="account-section" id="account-section">
+        <h2>Sign In to Stack</h2>
+        <input type="text" id="username-input" placeholder="Username">
+        <input type="password" id="password-input" placeholder="Password">
+        <button onclick="createAccount()">Create Account</button>
+        <button onclick="login()">Login</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+      <div class="cart-section" id="cart-section">
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <div id="cart-total">TOTAL: $<span id="total-price">0</span></div>
+        <div class="btc-info">
+          <p>Send exact amount to:</p>
+          <div class="btc-address" id="btc-address">bc1qrakrunninstacksonly69hustleordie</div>
+          <p>After payment, DM @rakrunnin with TXID</p>
+        </div>
+        <button class="buy-btn" onclick="checkout()">Checkout via BTC</button>
+      </div>
+      <div class="header">
+        <h1>RakRunnin Shop</h1>
+        <p>STACK RACKS WITH PREMIUM CARDS & ACCOUNTS — PAY VIA BTC ONLY — DM @rakrunnin</p>
+      </div>
+      <div class="navbar">
+        <button onclick="filterItems('all', 'cardContainer', 'cards')">All Cards</button>
+        <button onclick="filterItems('Visa', 'cardContainer', 'cards')">Visa</button>
+        <button onclick="filterItems('MasterCard', 'cardContainer', 'cards')">MasterCard</button>
+        <button onclick="filterItems('Discover', 'cardContainer', 'cards')">Discover</button>
+        <button onclick="filterItems('Amex', 'cardContainer', 'cards')">Amex</button>
+        <button onclick="filterItems('Chase', 'cardContainer', 'cards')">Chase</button>
+        <button onclick="sortItems('cardContainer')">Sort by Price</button>
+        <button onclick="sortItemsByRating('cardContainer')">Sort by Rating</button>
+        <button onclick="sortItemsByBalance('cardContainer')">Sort by Balance</button>
+      </div>
+      <div class="filter-slider">
+        <label>Price: <span id="price-value">$25 - $500</span></label>
+        <input type="range" min="25" max="500" value="500" oninput="filterByPrice(this.value)">
+        <label>Balance: <span id="balance-value">$500 - $10000</span></label>
+        <input type="range" min="500" max="10000" value="10000" oninput="filterByBalance(this.value)">
+      </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search products..." oninput="searchItems(this.value)">
+      </div>
+      <div class="section" id="cards-section">
+        <h2>Credit Cards</h2>
+        <div class="item-container" id="cardContainer"></div>
+      </div>
+      <div class="section" id="accounts-section" style="display: none;">
+        <h2>Store Accounts</h2>
+        <div class="item-container" id="accountContainer"></div>
+      </div>
+      <div class="section" id="malware-section" style="display: none;">
+        <h2>Software</h2>
+        <div class="item-container" id="malwareContainer"></div>
+      </div>
+      <div class="section" id="fullz-section" style="display: none;">
+        <h2>Premium Data</h2>
+        <div class="item-container" id="fullzContainer"></div>
+      </div>
+      <div class="job-section">
+        <h2>Contact Us</h2>
+        <p>DM @rakrunnin on Telegram to stack racks!</p>
+        <a href="https://t.me/rakrunnin">Message Now</a>
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+  </div>
+
+  <script>
+    // === CONFIGURATION ===
+    const BTC_ADDRESS = "bc1qrakrunninstacksonly69hustleordie";
+    const MIN_PRICE = 25;
+
+    // === DATA TEMPLATES ===
+    const cardData = [
+      { type: 'Visa', bin: '414720', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/d6/Visa_2021.svg', use: 'Shop online or cash out at ATMs.' },
+      { type: 'MasterCard', bin: '555555', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg', use: 'Ideal for subscriptions or purchases.' },
+      { type: 'Discover', bin: '601111', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/57/Discover_Card_logo.svg', use: 'Great for online stores.' },
+      { type: 'Amex', bin: '378282', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/30/American_Express_logo.svg', use: 'Luxury purchases or cashouts.' },
+      { type: 'Chase', bin: '426684', logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Chase_Bank_logo.svg', use: 'Premium card for cashouts.' }
+    ];
+    const accountData = [
+      { type: 'Saks Account', bin: 'SAKS', logo: 'https://upload.wikimedia.org/wikipedia/commons/3/3f/Saks_Fifth_Avenue_logo.svg', use: 'Buy luxury goods at Saks.', balance: 2000 },
+      { type: 'Nordstrom Gift Card', bin: 'NORD', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/06/Nordstrom_Logo.svg', use: 'Shop fashion at Nordstrom.', balance: 1500 },
+      { type: 'Walmart Gift Card', bin: 'WAL', logo: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg', use: 'Purchase electronics or groceries.', balance: 1000 },
+      { type: 'Macy’s Account', bin: 'MACY', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Macy%27s_Logo.svg', use: 'Shop at Macy’s for clothes.', balance: 2500 }
+    ];
+    const malwareData = [
+      { type: 'Secure Keylogger', bin: 'KEY', logo: 'https://img.icons8.com/ios-filled/50/003087/software.png', use: 'Capture data silently.' },
+      { type: 'Access Tool X', bin: 'TROJ', logo: 'https://img.icons8.com/ios-filled/50/003087/software.png', use: 'Remote access and data capture.' },
+      { type: 'Control Suite Z', bin: 'RATZ', logo: 'https://img.icons8.com/ios-filled/50/003087/software.png', use: 'Steal files and control devices.' }
+    ];
+    const fullzData = [
+      { type: 'Premium Data - John Doe', bin: 'FULL1', logo: 'https://img.icons8.com/ios-filled/50/003087/user.png', use: 'Open bank accounts or loans.' },
+      { type: 'Premium Data - Jane Smith', bin: 'FULL2', logo: 'https://img.icons8.com/ios-filled/50/003087/user.png', use: 'Use for credit applications.' },
+      { type: 'Premium Data - Mike Brown', bin: 'FULL3', logo: 'https://img.icons8.com/ios-filled/50/003087/user.png', use: 'High-value applications.' }
+    ];
+
+    // === UTILITIES ===
+    function applyLuhn(number) {
+      let sum = 0;
+      let alternate = false;
+      for (let i = number.length - 1; i >= 0; i--) {
+        let digit = parseInt(number[i]);
+        if (alternate) {
+          digit *= 2;
+          if (digit > 9) digit -= 9;
+        }
+        sum += digit;
+        alternate = !alternate;
+      }
+      const check = (10 - (sum % 10)) % 10;
+      return number + check;
+    }
+
+    function generateCardNumber(bin) {
+      let num = bin.toString().padEnd(6, '0').slice(0, 6);
+      for (let i = 6; i < 16; i++) {
+        num += Math.floor(Math.random() * 10);
+      }
+      return applyLuhn(num);
+    }
+
+    function generateStarRating(successRate, balance = 0) {
+      let rating = 3.0;
+      rating += (successRate - 80) * 0.05;
+      if (balance > 5000) rating += 0.5;
+      if (balance > 8000) rating += 0.3;
+      return Math.min(5.0, parseFloat(rating.toFixed(1)));
+    }
+
+    function generateItem(category) {
+      const data = category === 'cards' ? cardData : category === 'accounts' ? accountData : category === 'malware' ? malwareData : fullzData;
+      const item = data[Math.floor(Math.random() * data.length)];
+      const cardNumber = generateCardNumber(item.bin);
+      const price = Math.max(MIN_PRICE, Math.floor(Math.random() * 476) + MIN_PRICE);
+      const balance = category === 'cards' ? Math.floor(Math.random() * 9501) + 500 :
+                     category === 'accounts' ? item.balance || Math.floor(Math.random() * 2501) + 500 : 0;
+      const successRate = Math.floor(Math.random() * 16) + 80;
+      const soldOut = Math.random() < 0.3;
+      const rating = generateStarRating(successRate, balance);
+      return {
+        cardNumber: cardNumber.match(/.{1,4}/g).join('-'),
+        cardType: item.type,
+        logo: item.logo,
+        price,
+        use: item.use,
+        balance,
+        successRate,
+        soldOut,
+        rating,
+        category
+      };
+    }
+
+    // === CAPTCHA ===
+    function generateCaptcha() {
+      const ops = ['+', '-', '*'];
+      const op = ops[Math.floor(Math.random() * ops.length)];
+      const n1 = Math.floor(Math.random() * 20) + 1;
+      let n2 = Math.floor(Math.random() * 20) + 1;
+      if (op === '-') n2 = Math.min(n2, n1);
+      if (op === '*') n2 = Math.floor(Math.random() * 10) + 1;
+      const q = `What is ${n1} ${op} ${n2}?`;
+      let a;
+      if (op === '+') a = n1 + n2;
+      else if (op === '-') a = n1 - n2;
+      else a = n1 * n2;
+      return { question: q, answer: a.toString() };
+    }
+    let currentCaptcha = generateCaptcha();
+
+    // === UI FUNCTIONS ===
+    function toggleMenu() {
+      document.getElementById('sidebar').classList.toggle('active');
+    }
+
+    function showAccountSection() {
+      document.getElementById('account-section').style.display = 'block';
+      document.getElementById('cart-section').style.display = 'none';
+      document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+      document.getElementById('loading-screen').style.display = 'none';
+    }
+
+    function showCart() {
+      document.getElementById('cart-section').style.display = 'block';
+      document.getElementById('account-section').style.display = 'none';
+      document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+      displayCart();
+    }
+
+    function createAccount() {
+      const u = document.getElementById('username-input').value.trim();
+      const p = document.getElementById('password-input').value.trim();
+      if (!u || !p) return alert('Fill both fields.');
+      if (!/^[a-zA-Z0-9_]+$/.test(u)) return alert('Username: letters, numbers, underscore only.');
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (users[u]) return alert('Username taken.');
+      users[u] = { password: p, cart: [], purchased: false };
+      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('currentUser', u);
+      document.getElementById('user-info').textContent = `Logged in as ${u}`;
+      document.getElementById('account-section').style.display = 'none';
+      loadPage('cards');
+    }
+
+    function login() {
+      const u = document.getElementById('username-input').value.trim();
+      const p = document.getElementById('password-input').value.trim();
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (users[u] && users[u].password === p) {
+        localStorage.setItem('currentUser', u);
+        document.getElementById('user-info').textContent = `Logged in as ${u}`;
+        document.getElementById('account-section').style.display = 'none';
+        loadPage('cards');
+      } else {
+        alert('Wrong credentials.');
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      document.getElementById('user-info').textContent = '';
+      showAccountSection();
+    }
+
+    function loginRequired() {
+      alert('Log in first.');
+      showAccountSection();
+    }
+
+    function addToCart(item) {
+      const u = localStorage.getItem('currentUser');
+      if (!u) return loginRequired();
+      let users = JSON.parse(localStorage.getItem('users') || '{}');
+      users[u].cart = users[u].cart || [];
+      const exists = users[u].cart.some(i => i.cardNumber === item.cardNumber);
+      if (exists) return showPopup('Already in cart.');
+      users[u].cart.push(item);
+      localStorage.setItem('users', JSON.stringify(users));
+      showPopup(`ADDED: ${item.cardType} - $${item.price}`);
+      setTimeout(() => window.location.href = 'https://t.me/rakrunnin', 1200);
+    }
+
+    function displayCart() {
+      const u = localStorage.getItem('currentUser');
+      const itemsDiv = document.getElementById('cart-items');
+      const totalSpan = document.getElementById('total-price');
+      itemsDiv.innerHTML = '';
+      if (!u) {
+        itemsDiv.innerHTML = '<p>Log in to view cart.</p>';
+        totalSpan.textContent = '0';
+        return;
+      }
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      const cart = users[u]?.cart || [];
+      let total = 0;
+      cart.forEach((item, i) => {
+        total += item.price;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <p>${item.cardType} - $${item.price} (Bal: $${item.balance})</p>
+          <button onclick="removeFromCart(${i})">Remove</button>
+        `;
+        itemsDiv.appendChild(div);
+      });
+      totalSpan.textContent = total;
+      document.getElementById('btc-address').textContent = BTC_ADDRESS;
+    }
+
+    function removeFromCart(index) {
+      const u = localStorage.getItem('currentUser');
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (users[u]?.cart) {
+        users[u].cart.splice(index, 1);
+        localStorage.setItem('users', JSON.stringify(users));
+        displayCart();
+      }
+    }
+
+    function checkout() {
+      const u = localStorage.getItem('currentUser');
+      if (!u) return loginRequired();
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      if (!users[u].cart || users[u].cart.length === 0) return alert('Cart empty.');
+      showPopup('Send BTC to address above. DM @rakrunnin with TXID.');
+      setTimeout(() => window.location.href = 'https://t.me/rakrunnin', 1500);
+    }
+
+    function showPopup(msg) {
+      const p = document.getElementById('deal-popup');
+      p.querySelector('p').textContent = msg;
+      p.style.display = 'block';
+      setTimeout(() => p.style.display = 'none', 3000);
+    }
+
+    function getContainerId(type) {
+      if (cardData.some(c => c.type === type)) return 'cardContainer';
+      if (accountData.some(c => c.type === type)) return 'accountContainer';
+      if (malwareData.some(c => c.type === type)) return 'malwareContainer';
+      return 'fullzContainer';
+    }
+
+    function displayItems(filter = 'all', containerId = 'cardContainer', category = 'cards') {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      const items = Array(1000).fill().map(() => generateItem(category));
+      let filtered = filter === 'all' ? items : items.filter(i => i.cardType === filter);
+      filtered.slice(0, 50).forEach(item => addItemToDOM(item, container));
+      updateSidebar();
+    }
+
+    function addItemToDOM(item, container) {
+      const div = document.createElement('div');
+      div.className = 'item';
+      const stars = '★★★★★'.substring(0, Math.floor(item.rating)) + (item.rating % 1 >= 0.5 ? '½' : '');
+      div.innerHTML = `
+        ${item.soldOut ? '<p class="sold-out">SOLD OUT</p>' : `<img src="${item.logo}" alt="${item.cardType}">`}
+        <h3>${item.cardType} - $${item.price}</h3>
+        <p>Price: $${item.price}</p>
+        <p>ID: ${item.cardNumber.slice(0, 8)}XXXX</p>
+        ${item.balance ? `<p>Balance: $${item.balance}</p>` : ''}
+        <p>Success: ${item.successRate}%</p>
+        <p>${item.use}</p>
+        <p class="stars">${stars} ${item.rating}/5</p>
+        <button class="buy-btn" ${item.soldOut ? 'disabled' : ''} onclick='addToCart(${JSON.stringify(item)})'>Add to Cart</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function updateSidebar() {
+      const menu = document.getElementById('sidebar-menu');
+      menu.innerHTML = '';
+      const cats = [
+        { name: 'Credit Cards', id: 'cards', cont: 'cardContainer' },
+        { name: 'Store Accounts', id: 'accounts', cont: 'accountContainer' },
+        { name: 'Software', id: 'malware', cont: 'malwareContainer' },
+        { name: 'Premium Data', id: 'fullz', cont: 'fullzContainer' }
+      ];
+      cats.forEach(c => {
+        const types = (c.id === 'cards' ? cardData : c.id === 'accounts' ? accountData : c.id === 'malware' ? malwareData : fullzData).map(i => i.type);
+        types.forEach(t => {
+          const count = Array.from(document.getElementById(c.cont).children)
+            .filter(el => el.querySelector('h3')?.textContent.includes(t) && !el.querySelector('.sold-out')).length;
+          const li = document.createElement('li');
+          li.textContent = `${t} (${count})`;
+          li.className = count === 0 ? 'sold-out' : '';
+          if (count > 0) li.onclick = () => filterItems(t, c.cont, c.id);
+          menu.appendChild(li);
+        });
+      });
+      menu.innerHTML += '<li onclick="showAccountSection()">Account</li>';
+      menu.innerHTML += '<li onclick="showCart()">Cart</li>';
+    }
+
+    function searchItems(q) {
+      ['cardContainer', 'accountContainer', 'malwareContainer', 'fullzContainer'].forEach(id => {
+        const items = document.getElementById(id).getElementsByClassName('item');
+        Array.from(items).forEach(it => {
+          const title = it.querySelector('h3').textContent.toLowerCase();
+          it.style.display = title.includes(q.toLowerCase()) ? 'block' : 'none';
+        });
+      });
+      updateSidebar();
+    }
+
+    function filterItems(type, contId, cat) { displayItems(type, contId, cat); }
+
+    function sortItems(contId) {
+      const cont = document.getElementById(contId);
+      const items = Array.from(cont.children);
+      items.sort((a, b) => parseInt(a.querySelector('p:nth-child(3)').textContent.split('$')[1]) - parseInt(b.querySelector('p:nth-child(3)').textContent.split('$')[1]));
+      cont.innerHTML = ''; items.forEach(i => cont.appendChild(i));
+      updateSidebar();
+    }
+
+    function sortItemsByRating(contId) {
+      const cont = document.getElementById(contId);
+      const items = Array.from(cont.children);
+      items.sort((a, b) => parseFloat(b.querySelector('.stars').textContent.split('/')[0].trim()) - parseFloat(a.querySelector('.stars').textContent.split('/')[0].trim()));
+      cont.innerHTML = ''; items.forEach(i => cont.appendChild(i));
+      updateSidebar();
+    }
+
+    function sortItemsByBalance(contId) {
+      const cont = document.getElementById(contId);
+      const items = Array.from(cont.children);
+      items.sort((a, b) => (parseInt(b.querySelector('p:nth-child(5)')?.textContent.split('$')[1] || 0) - parseInt(a.querySelector('p:nth-child(5)')?.textContent.split('$')[1] || 0)));
+      cont.innerHTML = ''; items.forEach(i => cont.appendChild(i));
+      updateSidebar();
+    }
+
+    function filterByPrice(val) {
+      document.getElementById('price-value').textContent = `$25 - $${val}`;
+      ['cardContainer', 'accountContainer', 'malwareContainer', 'fullzContainer'].forEach(id => {
+        const items = document.getElementById(id).getElementsByClassName('item');
+        Array.from(items).forEach(it => {
+          const p = parseInt(it.querySelector('p:nth-child(3)').textContent.split('$')[1]);
+          it.style.display = p <= val ? 'block' : 'none';
+        });
+      });
+      updateSidebar();
+    }
+
+    function filterByBalance(val) {
+      document.getElementById('balance-value').textContent = `$500 - $${val}`;
+      ['cardContainer', 'accountContainer'].forEach(id => {
+        const items = document.getElementById(id).getElementsByClassName('item');
+        Array.from(items).forEach(it => {
+          const bal = parseInt(it.querySelector('p:nth-child(5)')?.textContent.split('$')[1] || 0);
+          it.style.display = bal <= val ? 'block' : 'none';
+        });
+      });
+      updateSidebar();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-theme');
+      const isDark = document.body.classList.contains('dark-theme');
+      document.body.style.background = isDark ? '#1a252f' : '#ffffff';
+      document.querySelector('.main-content').style.background = isDark ? '#2c3e50' : '#fff';
+    }
+
+    function loadPage(sectionId) {
+      document.getElementById('loading-screen').style.display = 'flex';
+      setTimeout(() => {
+        document.getElementById('cards-section').style.display = sectionId === 'cards' ? 'block' : 'none';
+        document.getElementById('accounts-section').style.display = sectionId === 'accounts' ? 'block' : 'none';
+        document.getElementById('malware-section').style.display = sectionId === 'malware' ? 'block' : 'none';
+        document.getElementById('fullz-section').style.display = sectionId === 'fullz' ? 'block' : 'none';
+        document.getElementById('account-section').style.display = 'none';
+        document.getElementById('cart-section').style.display = 'none';
+        if (sectionId === 'cards') displayItems('all', 'cardContainer', 'cards');
+        else if (sectionId === 'accounts') displayItems('all', 'accountContainer', 'accounts');
+        else if (sectionId === 'malware') displayItems('all', 'malwareContainer', 'malware');
+        else if (sectionId === 'fullz') displayItems('all', 'fullzContainer', 'fullz');
+        document.getElementById('loading-screen').style.display = 'none';
+      }, 800);
+      showPopup('NEW DROP! DM @rakrunnin!');
+    }
+
+    function verifyCaptcha() {
+      const input = document.getElementById('captcha-input').value.trim();
+      if (input === currentCaptcha.answer) {
+        document.getElementById('captcha-screen').style.display = 'none';
+        const u = localStorage.getItem('currentUser');
+        if (u) {
+          document.getElementById('user-info').textContent = `Logged in as ${u}`;
+          loadPage('cards');
+        } else {
+          showAccountSection();
+        }
+      } else {
+        alert('Wrong. Try again.');
+        currentCaptcha = generateCaptcha();
+        document.getElementById('captcha-question').textContent = currentCaptcha.question;
+        document.getElementById('captcha-input').value = '';
+      }
+    }
+
+    window.onload = () => {
+      document.getElementById('captcha-question').textContent = currentCaptcha.question;
+      displayItems('all', 'cardContainer', 'cards');
+      displayItems('all', 'accountContainer', 'accounts');
+      displayItems('all', 'malwareContainer', 'malware');
+      displayItems('all', 'fullzContainer', 'fullz');
+      setInterval(() => showPopup('50% OFF! DM @rakrunnin!'), 12000);
+    };
+  </script>
+</body>
+</html>
