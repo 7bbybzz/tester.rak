@@ -3,143 +3,155 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rak's Shop</title>
+  <title>Rak's Shop — Matte Luxury</title>
 
-  <!-- Tailwind Play CDN for quick prototyping -->
+  <!-- Tailwind CDN for quick prototype -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    /* Extra smoothness beyond Tailwind defaults */
-    :root {
-      --glass: rgba(255,255,255,0.04);
-      --glass-strong: rgba(255,255,255,0.06);
-      --accent: linear-gradient(90deg,#7c3aed,#06b6d4);
+    :root{
+      --bg:#070609;
+      --panel:#0b0b0d;
+      --glass: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.04);
+      --accent-from: #7c3aed;
+      --accent-to: #06b6d4;
+      --focus: rgba(124,58,237,0.14);
+      --ease-std: cubic-bezier(.2,.9,.2,1);
     }
 
-    /* subtle backdrop blur */
+    html,body { height:100%; }
+    body{
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.04), transparent 6%),
+                  radial-gradient(900px 500px at 90% 90%, rgba(6,182,212,0.02), transparent 8%),
+                  var(--bg);
+      color: #e6e6e9;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+      scroll-behavior:smooth;
+    }
+
+    /* header/wallet */
+    .topbar {
+      background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.02));
+      border: 1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px);
+      transition: box-shadow .28s var(--ease-std), transform .28s var(--ease-std);
+    }
+    .topbar.scrolled { box-shadow: 0 10px 30px rgba(0,0,0,0.6); transform: translateY(-2px); }
+
+    /* glass panels */
     .glass {
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.03);
       backdrop-filter: blur(6px);
     }
 
-    /* Smooth scroll & better font rendering */
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    /* subtle rounded focus rings */
+    :focus { outline: none; box-shadow: 0 0 0 6px var(--focus); border-radius: 9px; }
 
-    /* Nice soft focus ring */
-    :focus {
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(124,58,237,0.15);
-      border-radius: 8px;
-    }
-
-    /* Fancy product image gradient placeholder */
+    /* image placeholder */
     .img-placeholder {
-      background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(6,182,212,0.12));
-      border: 1px solid rgba(255,255,255,0.04);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,0.85);
-      font-weight: 600;
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.03);
+      display:flex; align-items:center; justify-content:center;
+      color: #ddd;
+      font-weight:600;
     }
 
-    /* Smooth fade & slide for modals */
-    .fade-in {
-      animation: fadeIn .28s cubic-bezier(.2,.9,.2,1) both;
-    }
-    .slide-left {
-      animation: slideLeft .28s cubic-bezier(.2,.9,.2,1) both;
-    }
-    .slide-up {
-      animation: slideUp .28s cubic-bezier(.2,.9,.2,1) both;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideLeft {
-      from { transform: translateX(12px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { transform: translateY(10px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
+    /* micro-interactions */
+    .btn-smooth { transition: transform .28s var(--ease-std), box-shadow .28s var(--ease-std), filter .28s var(--ease-std); }
+    .btn-smooth:active { transform: translateY(1px) scale(.998); }
 
-    /* small utility for subtle glass border when scrolled */
-    .scrolled {
-      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
-      backdrop-filter: blur(8px);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    }
+    /* modal & cart animations */
+    .fade-in { animation: fadeIn .26s var(--ease-std) both; }
+    .slide-left { animation: slideLeft .32s var(--ease-std) both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity:1; transform:none; } }
+    @keyframes slideLeft { from { transform: translateX(12px); opacity:0 } to { transform:none; opacity:1 } }
+
+    /* card hover */
+    .card:hover { transform: translateY(-6px) scale(1.006); box-shadow: 0 18px 50px rgba(2,6,23,0.6); }
+
+    /* nice scrollbar for dark */
+    ::-webkit-scrollbar { height:10px; width:10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius:10px; }
+    ::-webkit-scrollbar-track { background: transparent; }
   </style>
 </head>
-<body class="bg-[#07060a] text-gray-200 font-sans antialiased">
+<body>
 
-  <!-- NAV -->
-  <header id="site-header" class="fixed w-full z-40 top-4 left-0 px-6">
-    <div class="max-w-6xl mx-auto flex items-center justify-between p-3 rounded-2xl glass transition-all duration-300">
-      <a href="#" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-105">
+  <!-- Header with wallet -->
+  <header class="fixed top-4 left-0 right-0 px-6 z-40">
+    <div id="topbar" class="max-w-6xl mx-auto rounded-2xl p-3 flex items-center justify-between gap-4 topbar">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[color:var(--accent-from)] to-[color:var(--accent-to)] flex items-center justify-center shadow-lg transform transition-transform duration-300">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="white" stroke-width="1.6" stroke-linecap="round"/><path d="M6 6h12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path d="M6 18h12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/></svg>
         </div>
         <div>
           <div class="text-lg font-semibold tracking-tight">Rak's Shop</div>
-          <div class="text-xs text-gray-400 -mt-0.5">A little boutique of products</div>
+          <div class="text-xs text-gray-400 -mt-0.5">Matte · Luxury · Collectible economy</div>
         </div>
-      </a>
+      </div>
 
-      <nav class="flex items-center gap-4">
-        <a href="#products" class="text-sm px-3 py-2 rounded-md hover:bg-white/3 transition-colors">Shop</a>
-        <a href="#about" class="text-sm px-3 py-2 rounded-md hover:bg-white/3 transition-colors">About</a>
+      <div class="flex items-center gap-4">
+        <nav class="hidden md:flex items-center gap-3 text-sm text-gray-300">
+          <a href="#products" class="px-3 py-2 rounded-md hover:bg-white/4 transition">Shop</a>
+          <a href="#about" class="px-3 py-2 rounded-md hover:bg-white/4 transition">About</a>
+        </nav>
 
-        <button id="cart-btn" aria-label="Open cart" class="relative ml-2 px-3 py-2 rounded-md glass hover:scale-105 transition transform">
-          <svg class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span id="cart-count" class="absolute -top-2 -right-2 bg-[#fb7185] text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
-        </button>
-      </nav>
+        <!-- Wallet -->
+        <div class="flex items-center gap-3">
+          <div class="glass rounded-xl px-4 py-2 flex items-center gap-3">
+            <div class="text-xs text-gray-400">Credits</div>
+            <div id="wallet-balance" class="font-semibold text-lg">$0.00</div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="add-10" class="btn-smooth px-3 py-2 rounded-xl glass text-sm hover:brightness-105">+ $10</button>
+            <div class="relative">
+              <input id="custom-amt" type="number" min="1" placeholder="$" class="w-20 bg-transparent border border-white/6 rounded-xl px-3 py-2 text-sm focus:border-white/20" />
+            </div>
+            <button id="add-custom" class="btn-smooth px-3 py-2 rounded-xl bg-gradient-to-r from-[color:var(--accent-from)] to-[color:var(--accent-to)] shadow font-medium text-sm">Top up</button>
+          </div>
+
+          <button id="cart-btn" aria-label="Open cart" class="ml-2 px-3 py-2 rounded-xl glass btn-smooth hover:scale-105 relative">
+            <svg class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="cart-count" class="absolute -top-2 -right-2 bg-[#fb7185] text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <main class="pt-32">
+  <!-- Main -->
+  <main class="pt-40 pb-24">
     <section class="max-w-6xl mx-auto px-6">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div class="space-y-6">
           <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Rak's Shop — <span class="bg-clip-text text-transparent" style="background: var(--accent)">low-key collectible vibes</span>
+            Rak's Shop — <span style="background:linear-gradient(90deg,var(--accent-from),var(--accent-to)); -webkit-background-clip:text; background-clip:text; color:transparent;">Where Value Levels Up</span>
           </h1>
           <p class="text-gray-400 max-w-xl">
-            A sleek prototype storefront — dark, smooth, and polished. Placeholder products, buttery UI, and a cart you can actually use. Built as a static mock so you can iterate fast.
+            A matte-luxury prototype with product variants and a credit-gated checkout. Browse freely — checkout requires a wallet balance of <strong>$25</strong> or more.
           </p>
-
           <div class="flex gap-3">
-            <a href="#products" class="inline-flex items-center px-5 py-3 rounded-xl shadow-lg glass hover:scale-105 transition transform">
-              <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
-              Shop Products
-            </a>
-            <a href="#about" class="inline-flex items-center px-4 py-3 rounded-xl border border-white/6 text-sm hover:brightness-110 transition">
-              About Rak's
-            </a>
-          </div>
-
-          <div class="mt-2 text-xs text-gray-500">
-            Tip: click a product to quick-view. Add items to the cart — they persist in your browser.
+            <a href="#products" class="inline-flex items-center px-6 py-3 rounded-xl shadow-lg glass hover:scale-105 transition transform">Browse Products</a>
+            <a href="#about" class="inline-flex items-center px-4 py-3 rounded-xl border border-white/6 text-sm hover:brightness-110 transition">About</a>
           </div>
         </div>
 
-        <div class="relative">
-          <div class="rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-500 hover:scale-102">
-            <div class="w-full h-64 img-placeholder flex-col">
-              <div class="text-2xl">✨ Featured</div>
-              <div class="text-xs text-gray-300 mt-2">Product 1 — Spotlight</div>
-            </div>
+        <div class="rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-500 hover:scale-102">
+          <div class="w-full h-64 img-placeholder flex-col">
+            <div class="text-2xl">✨ Featured Drop</div>
+            <div class="text-xs text-gray-300 mt-2">Limited mock — Product 1 variants inside</div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- PRODUCTS -->
+    <!-- Products -->
     <section id="products" class="max-w-6xl mx-auto px-6 mt-12">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-semibold">Products</h2>
@@ -147,33 +159,30 @@
       </div>
 
       <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <!-- Product cards generated by JS -->
+        <!-- JS generates cards -->
       </div>
     </section>
 
-    <!-- ABOUT -->
+    <!-- About -->
     <section id="about" class="max-w-6xl mx-auto px-6 mt-14 mb-28">
       <div class="glass p-6 rounded-2xl">
         <h3 class="text-lg font-semibold">About this mock</h3>
         <p class="text-gray-400 mt-2">
-          This is a static prototype: responsive, accessible, and intentionally built to feel like a real shop.
-          Replace product names, images, and prices with your real content when you’re ready.
+          This is a refined static prototype focused on the "credit-gated" checkout flow and product variants. Credits are stored locally (for prototyping) — when ready we can wire up payments and real user accounts.
         </p>
       </div>
     </section>
   </main>
 
-  <!-- CART SIDEBAR -->
+  <!-- Cart Sidebar -->
   <aside id="cart" class="fixed top-0 right-0 h-full w-full md:w-96 max-w-full z-50 transform translate-x-full bg-[#06050a] shadow-2xl">
     <div class="h-full flex flex-col">
       <div class="p-6 flex items-center justify-between border-b border-white/5">
         <div>
           <div class="text-lg font-semibold">Your Cart</div>
-          <div class="text-sm text-gray-400">Items saved in your browser</div>
+          <div class="text-sm text-gray-400">Persistent in your browser</div>
         </div>
-        <button id="close-cart" aria-label="Close cart" class="p-2 rounded-md hover:bg-white/3 transition">
-          ✕
-        </button>
+        <button id="close-cart" aria-label="Close cart" class="p-2 rounded-md hover:bg-white/3 transition">✕</button>
       </div>
 
       <div id="cart-items" class="p-6 space-y-4 overflow-auto flex-1">
@@ -186,20 +195,19 @@
           <div id="cart-subtotal" class="text-lg font-semibold">$0.00</div>
         </div>
         <div class="flex gap-3">
-          <button id="checkout-btn" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-400 font-medium shadow hover:brightness-105 transition">
-            Checkout
-          </button>
-          <button id="clear-cart" class="py-3 px-4 rounded-xl border border-white/6 text-sm hover:bg-white/3 transition">
-            Clear
-          </button>
+          <button id="checkout-btn" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-[color:var(--accent-from)] to-[color:var(--accent-to)] font-medium shadow hover:brightness-105 transition">Checkout</button>
+          <button id="clear-cart" class="py-3 px-4 rounded-xl border border-white/6 text-sm hover:bg-white/3 transition">Clear</button>
+        </div>
+        <div class="text-xs text-gray-400 mt-3">
+          Note: To complete checkout you must have <strong>$25</strong> or more in credits. If your cart subtotal exceeds your balance, you'll be prompted to top up.
         </div>
       </div>
     </div>
   </aside>
 
-  <!-- QUICK VIEW MODAL -->
+  <!-- Modal Quick View -->
   <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-6">
-    <div id="modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div id="modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="relative max-w-3xl w-full rounded-2xl overflow-hidden glass shadow-2xl fade-in">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
         <div class="md:col-span-1">
@@ -214,18 +222,36 @@
             <button id="modal-close" class="text-gray-300 hover:text-white p-2">✕</button>
           </div>
 
-          <p id="modal-desc" class="text-gray-400 mt-4">Product description will show here. Short, punchy, and enticing.</p>
+          <p id="modal-desc" class="text-gray-400 mt-4">Product description will show here. Choose a variant and add to cart.</p>
 
-          <div class="mt-6 flex items-center gap-4">
-            <div class="text-2xl font-bold" id="modal-price">$0.00</div>
-            <button id="modal-add" class="ml-auto px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-400 font-medium shadow hover:brightness-105 transition">Add to cart</button>
+          <!-- Variant selector & price -->
+          <div class="mt-6">
+            <label class="text-xs text-gray-400">Variant</label>
+            <div id="variant-wrap" class="flex gap-3 mt-2">
+              <!-- buttons inserted by JS -->
+            </div>
+
+            <div class="mt-6 flex items-center gap-4">
+              <div>
+                <div class="text-xs text-gray-400">Price</div>
+                <div id="modal-price" class="text-2xl font-bold">$0.00</div>
+              </div>
+
+              <div class="ml-auto flex items-center gap-2">
+                <button id="qty-dec" class="px-3 py-2 rounded-lg border border-white/6">−</button>
+                <div id="qty" class="min-w-[36px] text-center">1</div>
+                <button id="qty-inc" class="px-3 py-2 rounded-lg border border-white/6">+</button>
+                <button id="modal-add" class="ml-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[color:var(--accent-from)] to-[color:var(--accent-to)] font-medium shadow transition">Add to cart</button>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SUCCESS TOAST -->
+  <!-- Toast -->
   <div id="toast" class="fixed right-6 bottom-6 z-60 hidden rounded-lg p-4 glass shadow transition">
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 rounded-full bg-green-500/80 flex items-center justify-center">✓</div>
@@ -236,35 +262,93 @@
     </div>
   </div>
 
-  <!-- SCRIPTS: small cart system (localStorage), modal, transitions -->
   <script>
-    // PRODUCTS DATA (placeholder)
+    /* ---------- DATA ---------- */
     const PRODUCTS = [
-      { id: "p1", title: "Product 1", price: 49.00, sku: "RS-001", desc: "Signature item. Placeholder copy.", img: null },
-      { id: "p2", title: "Product 2", price: 32.50, sku: "RS-002", desc: "Collector-friendly style.", img: null },
-      { id: "p3", title: "Product 3", price: 99.00, sku: "RS-003", desc: "Premium mock product.", img: null },
-      { id: "p4", title: "Product 4", price: 15.00, sku: "RS-004", desc: "Affordable option.", img: null },
-      { id: "p5", title: "Product 5", price: 75.25, sku: "RS-005", desc: "Limited-run concept.", img: null },
-      { id: "p6", title: "Product 6", price: 22.00, sku: "RS-006", desc: "Everyday collectible.", img: null }
+      // Product 1 has variants
+      { id: "p1", title: "Product 1", sku: "RS-001", desc: "Collectible with variants. Prices rise with condition.", variants: [
+        { id: "p1-v-used", label: "Used", price: 12.00 },
+        { id: "p1-v-mint", label: "Mint", price: 40.00 },
+        { id: "p1-v-sealed", label: "Sealed", price: 70.00 }
+      ]},
+      // others single price
+      { id: "p2", title: "Product 2", sku: "RS-002", desc: "Collector-friendly style.", price: 32.50 },
+      { id: "p3", title: "Product 3", sku: "RS-003", desc: "Premium mock product.", price: 99.00 },
+      { id: "p4", title: "Product 4", sku: "RS-004", desc: "Affordable option.", price: 15.00 },
+      { id: "p5", title: "Product 5", sku: "RS-005", desc: "Limited-run concept.", price: 75.25 },
+      { id: "p6", title: "Product 6", sku: "RS-006", desc: "Everyday collectible.", price: 22.00 }
     ];
 
-    // Utilities
+    /* ---------- STORAGE KEYS ---------- */
+    const CART_KEY = 'raks_cart_v2';
+    const CREDITS_KEY = 'raks_credits_v1';
+
+    /* ---------- UTIL ---------- */
     const $ = s => document.querySelector(s);
     const $$ = s => Array.from(document.querySelectorAll(s));
+    function money(n){ return `$${n.toFixed(2)}`; }
 
-    // Render product grid
+    /* ---------- CART & CREDITS ---------- */
+    let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}'); // { itemKey: qty } itemKey e.g. p1|p1-v-used
+    let credits = parseFloat(localStorage.getItem(CREDITS_KEY) || '0');
+
+    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
+    function saveCredits(){ localStorage.setItem(CREDITS_KEY, credits.toString()); updateWalletUI(); }
+
+    function addCredits(amount){
+      credits = Math.max(0, Number(credits) + Number(amount));
+      saveCredits();
+      showToast('Wallet topped', money(Number(amount)));
+    }
+
+    function addToCart(itemKey, qty = 1){
+      cart[itemKey] = (cart[itemKey] || 0) + qty;
+      saveCart();
+      showToast('Added to cart', itemKey.split('|')[0]);
+    }
+
+    function removeFromCart(itemKey){
+      delete cart[itemKey];
+      saveCart();
+    }
+
+    function setQty(itemKey, qty){
+      if(qty <= 0) removeFromCart(itemKey);
+      else { cart[itemKey] = qty; saveCart(); }
+    }
+
+    function clearCart(){ cart = {}; saveCart(); }
+
+    function cartEntries(){
+      return Object.entries(cart).map(([key, qty]) => {
+        // key format: pid or pid|variantId
+        const [pid, vid] = key.split('|');
+        const product = PRODUCTS.find(p => p.id === pid);
+        if(!product) return null;
+        let price = product.price || (product.variants && product.variants.find(v=>v.id===vid)?.price) || 0;
+        let label = product.title + (vid ? ` • ${product.variants.find(v=>v.id===vid).label}` : '');
+        return { key, pid, vid, title: label, sku: product.sku, price, qty, line: price * qty };
+      }).filter(Boolean);
+    }
+
+    function cartSubtotal(){
+      return cartEntries().reduce((s,e)=>s+e.line, 0);
+    }
+
+    /* ---------- RENDER PRODUCTS ---------- */
     const grid = $('#products-grid');
-    function renderProducts() {
+    function renderProducts(){
       grid.innerHTML = '';
-      PRODUCTS.forEach((p) => {
+      PRODUCTS.forEach(p=>{
         const card = document.createElement('article');
-        card.className = "group bg-[#08060a] rounded-2xl p-4 transition-transform duration-300 hover:-translate-y-1 shadow-lg";
+        card.className = "card group bg-[#08060a] rounded-2xl p-4 transition-transform duration-300 hover:-translate-y-1";
+        const priceText = p.price ? money(p.price) : money(p.variants[0].price) + ' — variants';
         card.innerHTML = `
-          <button data-id="${p.id}" class="w-full text-left focus:outline-none">
+          <button data-pid="${p.id}" class="w-full text-left focus:outline-none">
             <div class="w-full h-44 rounded-lg img-placeholder overflow-hidden transition-all duration-400 group-hover:scale-102">
               <div class="flex flex-col items-center justify-center h-full">
                 <div class="text-lg">${p.title}</div>
-                <div class="text-xs text-gray-300 mt-2">$${p.price.toFixed(2)}</div>
+                <div class="text-xs text-gray-300 mt-2">${priceText}</div>
               </div>
             </div>
           </button>
@@ -274,246 +358,240 @@
               <div class="text-xs text-gray-400">${p.sku}</div>
             </div>
             <div class="flex items-center gap-2">
-              <button data-id="${p.id}" class="add-btn px-3 py-1 rounded-lg glass text-sm hover:scale-105 transition">Add</button>
+              <button data-pid="${p.id}" class="quick-btn px-3 py-1 rounded-lg glass text-sm hover:scale-105 transition">Quick View</button>
             </div>
           </div>
         `;
         grid.appendChild(card);
       });
-
       $('#product-count').textContent = PRODUCTS.length;
     }
 
-    // CART logic
-    const CART_KEY = 'raks_cart_v1';
-    let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}');
-
-    function saveCart() {
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      updateCartUI();
+    /* ---------- UI: Wallet ---------- */
+    function updateWalletUI(){
+      $('#wallet-balance').textContent = money(credits);
     }
 
-    function addToCart(productId, qty = 1) {
-      cart[productId] = (cart[productId] || 0) + qty;
-      saveCart();
-      showToast('Added to cart', PRODUCTS.find(p => p.id === productId).title);
+    $('#add-10').addEventListener('click', ()=>{ addCredits(10); });
+    $('#add-custom').addEventListener('click', ()=>{
+      const v = Number($('#custom-amt').value);
+      if(!v || v <= 0){ alert('Enter an amount'); return; }
+      addCredits(v);
+      $('#custom-amt').value = '';
+    });
+
+    /* ---------- Modal Quick View ---------- */
+    const modal = $('#modal');
+    const modalBackdrop = $('#modal-backdrop');
+    let curModalProduct = null;
+    let curVariantId = null;
+    let curQty = 1;
+
+    function openModalFor(pid){
+      const product = PRODUCTS.find(x=>x.id===pid);
+      if(!product) return;
+      curModalProduct = product;
+      curQty = 1;
+      renderModalContent(product);
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
     }
 
-    function removeFromCart(productId) {
-      delete cart[productId];
-      saveCart();
+    function closeModal(){
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+      document.body.style.overflow = '';
     }
 
-    function clearCart() {
-      cart = {};
-      saveCart();
-    }
+    function renderModalContent(product){
+      $('#modal-title').textContent = product.title;
+      $('#modal-sku').textContent = `SKU: ${product.sku}`;
+      $('#modal-desc').textContent = product.desc || '';
+      $('#modal-image').textContent = product.title.split(' ')[1] || 'P';
 
-    function cartSubtotal() {
-      return Object.entries(cart).reduce((sum, [id, qty]) => {
-        const product = PRODUCTS.find(p => p.id === id);
-        if (!product) return sum;
-        return sum + product.price * qty;
-      }, 0);
-    }
-
-    function updateCartUI() {
-      const itemsWrap = $('#cart-items');
-      itemsWrap.innerHTML = '';
-      const entries = Object.entries(cart);
-      if (entries.length === 0) {
-        itemsWrap.innerHTML = `<div class="text-gray-400">Your cart is empty — add something cool.</div>`;
+      // variants
+      const wrap = $('#variant-wrap'); wrap.innerHTML = '';
+      if(product.variants && product.variants.length){
+        product.variants.forEach((v,i)=>{
+          const btn = document.createElement('button');
+          btn.className = `px-3 py-2 rounded-xl text-sm border ${i===0 ? 'border-white/10':''} focus:outline-none btn-smooth`;
+          btn.textContent = `${v.label} — ${money(v.price)}`;
+          btn.dataset.vid = v.id;
+          btn.addEventListener('click', ()=> {
+            curVariantId = v.id;
+            $$('#variant-wrap button').forEach(b=>b.classList.remove('border-white/10'));
+            btn.classList.add('border-white/10');
+            updateModalPrice();
+          });
+          wrap.appendChild(btn);
+        });
+        // default select first
+        curVariantId = product.variants[0].id;
+        wrap.querySelector('button').classList.add('border-white/10');
       } else {
-        entries.forEach(([id, qty]) => {
-          const p = PRODUCTS.find(x => x.id === id);
-          if (!p) return;
+        // no variants
+        curVariantId = null;
+      }
+      $('#qty').textContent = curQty;
+      updateModalPrice();
+    }
+
+    function updateModalPrice(){
+      let price = 0;
+      if(curModalProduct.variants && curVariantId){
+        price = curModalProduct.variants.find(v=>v.id===curVariantId).price;
+      } else { price = curModalProduct.price || 0; }
+      $('#modal-price').textContent = money(price * curQty);
+    }
+
+    $('#qty-inc').addEventListener('click', ()=>{ curQty++; $('#qty').textContent = curQty; updateModalPrice(); });
+    $('#qty-dec').addEventListener('click', ()=>{ if(curQty>1) curQty--; $('#qty').textContent = curQty; updateModalPrice(); });
+
+    $('#modal-add').addEventListener('click', ()=>{
+      // build item key
+      const pid = curModalProduct.id;
+      const key = curVariantId ? `${pid}|${curVariantId}` : pid;
+      addToCart(key, curQty);
+      closeModal();
+    });
+
+    $('#modal-close').addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', closeModal);
+
+    /* ---------- Cart UI ---------- */
+    function updateCartUI(){
+      const wrap = $('#cart-items'); wrap.innerHTML = '';
+      const entries = cartEntries();
+      if(entries.length === 0){
+        wrap.innerHTML = `<div class="text-gray-400">Your cart is empty — add something interesting.</div>`;
+      } else {
+        entries.forEach(e=>{
           const row = document.createElement('div');
           row.className = "flex items-center gap-4";
           row.innerHTML = `
-            <div class="w-14 h-14 rounded-md img-placeholder flex-shrink-0">${p.title.split(' ')[1] || 'P'}</div>
-            <div class="flex-1">
-              <div class="font-semibold">${p.title}</div>
-              <div class="text-xs text-gray-400">SKU: ${p.sku}</div>
-              <div class="text-xs text-gray-400 mt-1">$${p.price.toFixed(2)} × ${qty} = <span class="font-medium">$${(p.price*qty).toFixed(2)}</span></div>
+            <div class="w-14 h-14 rounded-md img-placeholder flex-shrink-0">${(e.title||'P').split(' ')[1]||'P'}</div>
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold truncate">${e.title}</div>
+              <div class="text-xs text-gray-400">SKU: ${e.sku}</div>
+              <div class="text-xs text-gray-400 mt-1">${money(e.price)} × ${e.qty} = <span class="font-medium">${money(e.line)}</span></div>
             </div>
             <div class="flex items-center gap-2">
-              <button class="dec px-2 py-1 rounded-md border border-white/6" data-id="${id}">−</button>
-              <div class="px-2">${qty}</div>
-              <button class="inc px-2 py-1 rounded-md border border-white/6" data-id="${id}">+</button>
-              <button class="ml-2 text-sm text-red-400 remove" data-id="${id}">Remove</button>
+              <button class="dec px-2 py-1 rounded-md border border-white/6" data-key="${e.key}">−</button>
+              <div class="px-2">${e.qty}</div>
+              <button class="inc px-2 py-1 rounded-md border border-white/6" data-key="${e.key}">+</button>
+              <button class="ml-2 text-sm text-red-400 remove" data-key="${e.key}">Remove</button>
             </div>
           `;
-          itemsWrap.appendChild(row);
+          wrap.appendChild(row);
         });
       }
-
-      // subtotal & cart count
-      $('#cart-subtotal').textContent = `$${cartSubtotal().toFixed(2)}`;
-      const totalCount = Object.values(cart).reduce((a,b) => a+b, 0);
+      $('#cart-subtotal').textContent = money(cartSubtotal());
+      const totalCount = Object.values(cart).reduce((a,b)=>a+b,0);
       $('#cart-count').textContent = totalCount;
+      saveCartToLSNoRender(); // ensure saved without endless loop
     }
 
-    // TOAST
-    let toastTimer;
-    function showToast(title, sub) {
-      const toast = $('#toast');
-      $('#toast-title').textContent = title;
-      $('#toast-sub').textContent = sub || '';
-      toast.classList.remove('hidden');
-      toast.classList.add('fade-in', 'slide-left');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        toast.classList.add('hidden');
-        toast.classList.remove('fade-in', 'slide-left');
-      }, 1800);
-    }
+    function saveCartToLSNoRender(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
 
-    // MODAL
-    function openModal(product) {
-      $('#modal-title').textContent = product.title;
-      $('#modal-sku').textContent = `SKU: ${product.sku}`;
-      $('#modal-price').textContent = `$${product.price.toFixed(2)}`;
-      $('#modal-desc').textContent = product.desc;
-      $('#modal').classList.remove('hidden');
-      $('#modal').classList.add('flex');
-      document.body.style.overflow = 'hidden';
-      // attach id to add button
-      $('#modal-add').dataset.id = product.id;
-    }
-    function closeModal() {
-      $('#modal').classList.add('hidden');
-      $('#modal').classList.remove('flex');
-      document.body.style.overflow = '';
-    }
+    // delegation for cart buttons
+    document.addEventListener('click', (e)=>{
+      if(e.target.matches('.inc')){
+        const key = e.target.dataset.key; cart[key] = (cart[key]||0)+1; saveCart();
+      }
+      if(e.target.matches('.dec')){
+        const key = e.target.dataset.key; cart[key] = Math.max(0, (cart[key]||0)-1);
+        if(cart[key]===0) delete cart[key];
+        saveCart();
+      }
+      if(e.target.matches('.remove')){
+        const key = e.target.dataset.key; removeFromCart(key);
+      }
 
-    // CART SIDEBAR open/close
-    function openCart() {
-      $('#cart').style.transform = 'translateX(0)';
-      document.body.style.overflow = 'hidden';
-      // small focus
-      $('#close-cart').focus();
-    }
-    function closeCart() {
-      $('#cart').style.transform = 'translateX(100%)';
-      document.body.style.overflow = '';
-    }
+      // open cart
+      if(e.target.id === 'cart-btn') openCart();
+      if(e.target.id === 'close-cart') closeCart();
 
-    // Event delegation
-    document.addEventListener('click', (e) => {
+      // quick view from product list
+      if(e.target.closest('.quick-btn')){
+        const pid = e.target.closest('[data-pid]')?.dataset?.pid || e.target.dataset?.pid;
+        if(pid) openModalFor(pid);
+      }
+
       // product card click -> open modal
-      const btn = e.target.closest('[data-id]');
-      if (btn && btn.matches('button') && btn.parentElement && btn.parentElement.matches('article *') ) {
-        const pid = btn.dataset.id;
-        const product = PRODUCTS.find(p => p.id === pid);
-        if (product) openModal(product);
-        return;
+      if(e.target.closest('[data-pid]') && e.target.tagName === 'BUTTON' && e.target.dataset.pid){
+        const pid = e.target.dataset.pid;
+        openModalFor(pid);
       }
+    });
 
-      // add buttons
-      if (e.target.matches('.add-btn')) {
-        const pid = e.target.dataset.id;
-        addToCart(pid, 1);
-        return;
-      }
+    /* ---------- Cart open/close ---------- */
+    function openCart(){ $('#cart').style.transform = 'translateX(0)'; document.body.style.overflow = 'hidden'; $('#close-cart').focus(); }
+    function closeCart(){ $('#cart').style.transform = 'translateX(100%)'; document.body.style.overflow = ''; }
 
-      if (e.target.id === 'modal-add') {
-        const pid = e.target.dataset.id;
-        addToCart(pid, 1);
-        closeModal();
-        return;
-      }
+    /* ---------- Checkout logic ---------- */
+    $('#checkout-btn').addEventListener('click', ()=>{
+      const subtotal = cartSubtotal();
+      if(subtotal === 0){ showToast('Cart empty', 'Add something first'); return; }
 
-      if (e.target.id === 'modal-close' || e.target.id === 'modal-backdrop') {
-        closeModal();
-        return;
-      }
-
-      if (e.target.id === 'cart-btn') {
-        openCart();
-        return;
-      }
-      if (e.target.id === 'close-cart') {
-        closeCart();
-        return;
-      }
-
-      // cart item controls
-      if (e.target.matches('.inc')) {
-        const id = e.target.dataset.id;
-        cart[id] = (cart[id] || 0) + 1;
-        saveCart();
-        return;
-      }
-      if (e.target.matches('.dec')) {
-        const id = e.target.dataset.id;
-        cart[id] = Math.max(0, (cart[id] || 0) - 1);
-        if (cart[id] === 0) delete cart[id];
-        saveCart();
-        return;
-      }
-      if (e.target.matches('.remove')) {
-        removeFromCart(e.target.dataset.id);
-        return;
-      }
-
-      // clear cart
-      if (e.target.id === 'clear-cart') {
-        clearCart();
-        return;
-      }
-
-      // checkout (fake)
-      if (e.target.id === 'checkout-btn') {
-        if (Object.keys(cart).length === 0) {
-          showToast('Cart empty', 'Add something first');
-          return;
-        }
-        // Simulate checkout dialog
-        const total = cartSubtotal().toFixed(2);
-        const confirmed = confirm(`Fake checkout — total $${total}. Click OK to "place order".`);
-        if (confirmed) {
-          clearCart();
-          closeCart();
-          showToast('Order placed', 'Thanks — this was a mock checkout.');
+      // require minimum balance to attempt checkout (user requested): 25
+      if(credits < 25){
+        // open a polite modal / prompt
+        const needed = 25 - credits;
+        if(confirm(`You need at least $25 in credits to checkout. Add $${needed.toFixed(2)} now?`)){
+          addCredits(needed);
         }
         return;
       }
-    });
 
-    // keyboard: Esc to close modals
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (!$('#modal').classList.contains('hidden')) closeModal();
-        if ($('#cart').style.transform === 'translateX(0)') closeCart();
+      // now make sure they have enough credits to pay subtotal
+      if(credits < subtotal){
+        const need = (subtotal - credits).toFixed(2);
+        if(confirm(`Your balance is ${money(credits)} but cart is ${money(subtotal)}. Top up $${need}?`)){
+          // auto top up required amount
+          addCredits(Number(need));
+          // now we fall through to place order after adding
+        } else return;
       }
+
+      // After passes, charge credits and place order
+      credits = Number((credits - subtotal).toFixed(2));
+      saveCredits();
+      clearCart();
+      closeCart();
+      showToast('Order placed', `Charged ${money(subtotal)} from credits.`);
     });
 
-    // when header area should gain small shadow on scroll
-    window.addEventListener('scroll', () => {
-      const header = $('#site-header > div');
-      if (window.scrollY > 12) header.classList.add('scrolled');
-      else header.classList.remove('scrolled');
+    /* ---------- Toast ---------- */
+    let toastTimer;
+    function showToast(title, sub){
+      const toast = $('#toast');
+      $('#toast-title').textContent = title; $('#toast-sub').textContent = sub || '';
+      toast.classList.remove('hidden'); toast.classList.add('fade-in','slide-left');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(()=>{ toast.classList.add('hidden'); toast.classList.remove('fade-in','slide-left'); }, 2000);
+    }
+
+    /* ---------- Misc ---------- */
+    window.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){ if(!$('#modal').classList.contains('hidden')) closeModal(); if($('#cart').style.transform === 'translateX(0)') closeCart(); }
     });
 
-    // startup
+    window.addEventListener('scroll', ()=>{
+      const tb = document.getElementById('topbar');
+      if(window.scrollY > 12) tb.classList.add('scrolled'); else tb.classList.remove('scrolled');
+    });
+
+    /* ---------- Init ---------- */
     (function init(){
       renderProducts();
+      updateWalletUI();
       updateCartUI();
 
-      // attach product click handlers (card button opens modal)
-      document.querySelectorAll('#products-grid article button[data-id]').forEach(btn => {
-        btn.addEventListener('click', (ev) => {
-          const pid = btn.dataset.id;
-          const product = PRODUCTS.find(p => p.id === pid);
-          if (product) openModal(product);
-        });
-      });
+      // ensure cart saved initial
+      saveCartToLSNoRender();
     })();
 
-    // expose a tiny dev helper (optional)
-    window.RAKS = {
-      PRODUCTS, cart, addToCart, clearCart
-    };
+    // expose small helper for dev console
+    window.RAKS = { PRODUCTS, cart, credits, addCredits, addToCart, clearCart };
   </script>
 
 </body>
