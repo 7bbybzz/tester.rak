@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RakRunnin | Verified CC Shop | BTC Only</title>
+  <title>RakRunnin | Fresh Dumps | BTC Only</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -11,6 +11,7 @@
       --primary: #0d47a1;
       --accent: #ff6d00;
       --success: #00c853;
+      --warning: #ffab00;
       --bg: #0a0e17;
       --card: #111826;
       --text: #e2e8f0;
@@ -19,6 +20,13 @@
       --shadow: 0 8px 32px rgba(0,0,0,0.5);
       --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       background: var(--bg);
@@ -26,9 +34,7 @@
       font-family: 'Inter', sans-serif;
       line-height: 1.6;
       overflow-x: hidden;
-      background-image: 
-        radial-gradient(circle at 20% 80%, rgba(13,71,161,0.08) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255,109,0,0.08) 0%, transparent 50%);
+      transition: var(--transition);
     }
 
     /* HEADER */
@@ -42,7 +48,6 @@
       top: 0;
       z-index: 1000;
       box-shadow: var(--shadow);
-      transition: var(--transition);
     }
     .logo {
       font-family: 'Orbitron', sans-serif;
@@ -66,6 +71,14 @@
       background: var(--success);
       border-radius: 50%;
       animation: pulse 2s infinite;
+    }
+    .ssl-badge {
+      background: rgba(0,200,83,0.2);
+      color: var(--success);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
     }
 
     /* NAVBAR */
@@ -96,10 +109,40 @@
       border-color: var(--accent);
     }
 
-    /* CONTAINER */
+    /* SEARCH BAR */
+    .search-container {
+      max-width: 1400px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      position: relative;
+    }
+    #bin-search {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 3rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    #bin-search:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255,109,0,0.2);
+    }
+    .search-icon {
+      position: absolute;
+      left: 1.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    /* MAIN */
     .container {
       max-width: 1400px;
-      margin: 2rem auto;
+      margin: 0 auto 2rem;
       padding: 0 1rem;
       display: grid;
       grid-template-columns: 300px 1fr;
@@ -117,7 +160,6 @@
       height: fit-content;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
-      transition: var(--transition);
     }
     .sidebar h3 {
       color: var(--accent);
@@ -171,10 +213,6 @@
       opacity: 0;
       transform: translateY(20px);
     }
-    .card-item:nth-child(1) { animation: fadeInUp 0.6s 0.1s forwards; }
-    .card-item:nth-child(2) { animation: fadeInUp 0.6s 0.2s forwards; }
-    .card-item:nth-child(3) { animation: fadeInUp 0.6s 0.3s forwards; }
-    /* Add more as needed */
     .card-item:hover {
       transform: translateY(-10px);
       box-shadow: 0 20px 40px rgba(255,109,0,0.25);
@@ -215,6 +253,17 @@
       padding: 2px 6px;
       border-radius: 4px;
       font-weight: 700;
+      animation: pulse 1.5s infinite;
+    }
+    .new-badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: var(--warning);
+      color: black;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
     }
     .card-body {
       padding: 1.2rem;
@@ -233,6 +282,11 @@
       color: #fbbf24;
       font-size: 1.1rem;
       letter-spacing: 2px;
+    }
+    .checked-time {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
     }
     .price {
       font-size: 1.5rem;
@@ -257,11 +311,6 @@
       background: #e65100;
       transform: scale(1.03);
     }
-    .sold-out {
-      background: #374151 !important;
-      color: #9ca3af !important;
-      cursor: not-allowed;
-    }
 
     /* CART */
     .cart-floating {
@@ -275,9 +324,9 @@
       width: 340px;
       z-index: 1000;
       border: 1px solid var(--border);
-      transition: var(--transition);
       opacity: 0;
       transform: translateY(20px);
+      transition: var(--transition);
     }
     .cart-floating.visible {
       opacity: 1;
@@ -293,10 +342,21 @@
     .cart-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       padding: 0.6rem 0;
       border-bottom: 1px dashed var(--border);
       font-size: 0.9rem;
       animation: slideIn 0.4s;
+    }
+    .remove-item {
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 0.8rem;
     }
     .checkout-btn {
       width: 100%;
@@ -314,7 +374,26 @@
       background: #00a843;
     }
 
-    /* BTC MODAL */
+    /* TICKER */
+    .ticker {
+      background: rgba(0,0,0,0.7);
+      color: var(--accent);
+      padding: 0.6rem;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      z-index: 900;
+      animation: ticker 20s linear infinite;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* MODALS */
     .modal {
       position: fixed;
       top: 0; left: 0;
@@ -339,6 +418,16 @@
       border: 1px solid var(--accent);
       box-shadow: 0 20px 50px rgba(255,109,0,0.3);
       animation: zoomIn 0.5s;
+      position: relative;
+    }
+    .close-modal {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.5rem;
+      cursor: pointer;
     }
     #qr-code {
       width: 180px; height: 180px;
@@ -375,16 +464,30 @@
       font-weight: 700;
       font-family: 'Orbitron', sans-serif;
     }
-    .confirmations {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      color: var(--success);
+
+    /* THEME TOGGLE */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--card);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      z-index: 1001;
+      transition: var(--transition);
+    }
+    .theme-toggle:hover {
+      transform: rotate(180deg);
     }
 
     /* ANIMATIONS */
-    @keyframes fadeInUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes zoomIn { from { transform: scale(0.8); } to { transform: scale(1); } }
     @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
@@ -397,14 +500,25 @@
   <div class="header">
     <div class="logo">RAKRUNNIN</div>
     <div class="header-stats">
-      <div class="stat"><div class="live-dot"></div> 1,284 Online</div>
-      <div class="stat"><i class="fas fa-shield-alt"></i> SSL Secured</div>
-      <div class="stat"><i class="fas fa-lock"></i> Escrow Protected</div>
+      <div class="stat"><div class="live-dot"></div> <span id="online-count">1,284</span> Online</div>
+      <div class="stat"><i class="fas fa-shield-alt"></i> <span class="ssl-badge">SSL</span></div>
+      <div class="stat"><i class="fas fa-lock"></i> Escrow</div>
     </div>
+  </div>
+
+  <!-- THEME TOGGLE -->
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <i class="fas fa-moon" id="theme-icon"></i>
   </div>
 
   <!-- NAVBAR -->
   <div class="navbar" id="navbar"></div>
+
+  <!-- SEARCH -->
+  <div class="search-container">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="bin-search" placeholder="Search BIN, Country, Level..." oninput="filterCards()">
+  </div>
 
   <!-- MAIN -->
   <div class="container">
@@ -412,23 +526,12 @@
     <div class="sidebar">
       <h3><i class="fas fa-filter"></i> Filters</h3>
       <div class="filter-group">
-        <label>Price: <span id="price-val">$10 - $600</span></label>
-        <input type="range" class="range-slider" min="10" max="600" value="600" oninput="updatePrice(this.value)">
+        <label>Price: <span id="price-val">$25 - $600</span></label>
+        <input type="range" class="range-slider" id="price-slider" min="25" max="600" value="600" oninput="updateFilters()">
       </div>
       <div class="filter-group">
         <label>Balance: <span id="bal-val">$500 - $25,000</span></label>
-        <input type="range" class="range-slider" min="500" max="25000" value="25000" oninput="updateBal(this.value)">
-      </div>
-      <div class="filter-group">
-        <label>Card Level</label>
-        <select class="range-slider" style="width:100%; padding:0.5rem; border-radius:8px; background:#1e293b; color:white; border:none;">
-          <option>All Levels</option>
-          <option>Classic</option>
-          <option>Gold</option>
-          <option>Platinum</option>
-          <option>Signature</option>
-          <option>Infinite</option>
-        </select>
+        <input type="range" class="range-slider" id="bal-slider" min="500" max="25000" value="25000" oninput="updateFilters()">
       </div>
     </div>
 
@@ -436,7 +539,7 @@
     <div class="item-grid" id="itemGrid"></div>
   </div>
 
-  <!-- FLOATING CART -->
+  <!-- CART -->
   <div class="cart-floating" id="cartFloat">
     <div class="cart-header">
       <span><i class="fas fa-shopping-cart"></i> CART (<span id="cart-count">0</span>)</span>
@@ -446,53 +549,74 @@
     <button class="checkout-btn" onclick="openBTCModal()">PROCEED TO BTC</button>
   </div>
 
-  <!-- BTC MODAL -->
+  <!-- TICKER -->
+  <div class="ticker" id="ticker">Visa 414720 sold for $48 • MasterCard 555555 sold for $62 • Amex 378282 sold for $89 • Chase 426684 sold for $52</div>
+
+  <!-- MODALS -->
+  <div class="modal" id="comingSoonModal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('comingSoonModal')">&times;</button>
+      <h3>COMING SOON</h3>
+      <p>This section drops in <strong>24 hours</strong>.</p>
+      <div style="background:#333; height:8px; border-radius:4px; margin:1rem 0;">
+        <div style="width:65%; height:100%; background:var(--accent); border-radius:4px;"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal" id="btcModal">
     <div class="modal-content">
+      <button class="close-modal" onclick="closeModal('btcModal')">&times;</button>
       <h3><i class="fab fa-bitcoin"></i> BTC PAYMENT</h3>
       <div id="qr-code"></div>
       <div class="btc-addr" id="btc-address">1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy</div>
       <button class="copy-btn" onclick="copyAddr()">COPY</button>
       <div class="countdown" id="countdown">60:00</div>
       <p style="margin:1rem 0; font-size:0.9rem; color:#94a3b8;">Send <strong id="btc-amount">0.002345</strong> BTC</p>
-      <div class="confirmations" id="confirmations">Waiting for payment...</div>
+      <div style="color:var(--success); font-size:0.9rem;" id="escrow-note">Funds held in escrow. Released in 30 min after 3 confirmations.</div>
     </div>
   </div>
 
   <script>
     const BTC_ADDR = "1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy";
     let cart = JSON.parse(localStorage.getItem('rakcart') || '[]');
-    let countdownTimer, fakeConfirmTimer;
+    let countdownTimer, onlineTimer, stockTimer;
     let totalUSD = 0;
+    let onlineCount = 1284;
 
     const realCards = [
-      {type:"Visa", bin:"414720", country:"US", flag:"https://flagcdn.com/us.svg", level:"Signature", balance:12450, valid:98},
-      {type:"MasterCard", bin:"555555", country:"UK", flag:"https://flagcdn.com/gb.svg", level:"World Elite", balance:18900, valid:99},
-      {type:"Amex", bin:"378282", country:"CA", flag:"https://flagcdn.com/ca.svg", level:"Centurion", balance:25700, valid:97},
-      {type:"Visa", bin:"426684", country:"AU", flag:"https://flagcdn.com/au.svg", level:"Infinite", balance:9800, valid:96},
-      {type:"Discover", bin:"601111", country:"US", flag:"https://flagcdn.com/us.svg", level:"Cashback", balance:6700, valid:95},
-      {type:"Chase", bin:"426685", country:"US", flag:"https://flagcdn.com/us.svg", level:"Sapphire", balance:15200, valid:98},
-      {type:"Capital One", bin:"414709", country:"US", flag:"https://flagcdn.com/us.svg", level:"Venture", balance:11300, valid:94},
-      {type:"Citi", bin:"542418", country:"US", flag:"https://flagcdn.com/us.svg", level:"Prestige", balance:21000, valid:99},
-      {type:"Barclays", bin:"491761", country:"UK", flag:"https://flagcdn.com/gb.svg", level:"Arrival", balance:8700, valid:93},
-      {type:"HSBC", bin:"456734", country:"HK", flag:"https://flagcdn.com/hk.svg", level:"Premier", balance:29800, valid:99},
-      // Add 40+ more in production
+      {type:"Visa", bin:"414720", country:"US", flag:"https://flagcdn.com/us.svg", level:"Signature", balance:12450, valid:98, price:48, checked:"3 min ago"},
+      {type:"MasterCard", bin:"555555", country:"UK", flag:"https://flagcdn.com/gb.svg", level:"World Elite", balance:18900, valid:99, price:62, checked:"1 min ago"},
+      {type:"Amex", bin:"378282", country:"CA", flag:"https://flagcdn.com/ca.svg", level:"Centurion", balance:25700, valid:97, price:89, checked:"5 min ago"},
+      {type:"Chase", bin:"426684", country:"US", flag:"https://flagcdn.com/us.svg", level:"Sapphire", balance:9800, valid:96, price:52, checked:"2 min ago"},
+      {type:"Citi", bin:"542418", country:"US", flag:"https://flagcdn.com/us.svg", level:"Prestige", balance:21000, valid:99, price:78, checked:"4 min ago"},
+      {type:"Wells Fargo", bin:"480011", country:"US", flag:"https://flagcdn.com/us.svg", level:"Platinum", balance:5600, valid:94, price:28, checked:"6 min ago"},
+      {type:"Capital One", bin:"414709", country:"US", flag:"https://flagcdn.com/us.svg", level:"Venture", balance:11300, valid:95, price:42, checked:"1 min ago"},
+      {type:"Barclays", bin:"491761", country:"UK", flag:"https://flagcdn.com/gb.svg", level:"Arrival", balance:8700, valid:93, price:35, checked:"7 min ago"},
+      {type:"HSBC", bin:"456734", country:"HK", flag:"https://flagcdn.com/hk.svg", level:"Premier", balance:29800, valid:99, price:95, checked:"2 min ago"},
+      {type:"Sberbank", bin:"427640", country:"RU", flag:"https://flagcdn.com/ru.svg", level:"Gold", balance:7200, valid:92, price:30, checked:"3 min ago"},
+      {type:"Visa", bin:"453997", country:"BR", flag:"https://flagcdn.com/br.svg", level:"Classic", balance:1800, valid:90, price:25, checked:"8 min ago"},
+      {type:"MasterCard", bin:"510510", country:"MX", flag:"https://flagcdn.com/mx.svg", level:"Standard", balance:3200, valid:91, price:27, checked:"4 min ago"},
+      // 38 more low-ticket cards below...
+      {type:"Visa", bin:"491183", country:"US", flag:"https://flagcdn.com/us.svg", level:"Classic", balance:900, valid:88, price:25, checked:"1 min ago"},
+      {type:"MasterCard", bin:"521729", country:"CA", flag:"https://flagcdn.com/ca.svg", level:"Standard", balance:1500, valid:89, price:26, checked:"3 min ago"},
+      {type:"Visa", bin:"402634", country:"US", flag:"https://flagcdn.com/us.svg", level:"Classic", balance:1100, valid:87, price:25, checked:"5 min ago"},
     ];
 
-    function renderCards() {
+    function renderCards(filtered = realCards) {
       const grid = document.getElementById('itemGrid');
       grid.innerHTML = '';
-      realCards.forEach((c, i) => {
-        const price = Math.floor(c.balance * 0.017) + 18;
+      filtered.forEach((c, i) => {
         const stars = '★'.repeat(Math.floor(c.valid/20)) + '☆'.repeat(5 - Math.floor(c.valid/20));
         const item = document.createElement('div');
         item.className = 'card-item';
-        item.style.animationDelay = `${i * 0.1}s`;
+        item.style.animationDelay = `${i * 0.05}s`;
         item.innerHTML = `
           <div class="card-header">
             <div class="card-type"><img src="${c.flag}" class="flag"> ${c.type} ${c.level}</div>
             <div class="card-bin">${c.bin}xxxxxx</div>
             <div class="live-badge">LIVE</div>
+            ${i < 3 ? '<div class="new-badge">NEW</div>' : ''}
           </div>
           <div class="card-body">
             <div class="card-info">
@@ -501,8 +625,9 @@
               <span>Country:</span><strong>${c.country}</strong>
               <span>Rating:</span><strong class="rating">${stars}</strong>
             </div>
-            <div class="price">$${price}</div>
-            <button class="buy-btn" onclick="addToCart('${c.type} ${c.bin}', ${price})">BUY NOW</button>
+            <div class="checked-time">Checked ${c.checked}</div>
+            <div class="price">$${c.price}</div>
+            <button class="buy-btn" onclick="addToCart('${c.type} ${c.bin}', ${c.price})">BUY NOW</button>
           </div>
         `;
         grid.appendChild(item);
@@ -515,6 +640,20 @@
       localStorage.setItem('rakcart', JSON.stringify(cart));
       updateCart();
       document.getElementById('cartFloat').classList.add('visible');
+      playSound();
+    }
+
+    function playSound() {
+      const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA');
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    }
+
+    function removeFromCart(index) {
+      totalUSD -= cart[index].price;
+      cart.splice(index, 1);
+      localStorage.setItem('rakcart', JSON.stringify(cart));
+      updateCart();
     }
 
     function updateCart() {
@@ -527,16 +666,37 @@
         sum += item.price;
         const div = document.createElement('div');
         div.className = 'cart-item';
-        div.innerHTML = `<div>${item.name}</div><div>$${item.price}</div>`;
+        div.innerHTML = `<div>${item.name}</div><div>$${item.price} <button class="remove-item" onclick="removeFromCart(${i})">&times;</button></div>`;
         items.appendChild(div);
       });
       count.textContent = cart.length;
       total.textContent = '$' + sum.toFixed(2);
+      if (cart.length === 0) document.getElementById('cartFloat').classList.remove('visible');
+    }
+
+    function updateFilters() {
+      const priceMax = document.getElementById('price-slider').value;
+      const balMax = document.getElementById('bal-slider').value;
+      document.getElementById('price-val').textContent = `$25 - $${priceMax}`;
+      document.getElementById('bal-val').textContent = `$500 - $${balMax}`;
+      filterCards();
+    }
+
+    function filterCards() {
+      const query = document.getElementById('bin-search').value.toLowerCase();
+      const priceMax = parseInt(document.getElementById('price-slider').value);
+      const balMax = parseInt(document.getElementById('bal-slider').value);
+      const filtered = realCards.filter(c => 
+        c.price <= priceMax &&
+        c.balance <= balMax &&
+        (c.bin.includes(query) || c.country.toLowerCase().includes(query) || c.level.toLowerCase().includes(query))
+      );
+      renderCards(filtered);
     }
 
     function openBTCModal() {
       if (cart.length === 0) return;
-      const btcRate = 102345.67; // Fake live rate
+      const btcRate = 102345.67;
       const btcAmount = (totalUSD / btcRate).toFixed(8);
       document.getElementById('btc-amount').textContent = btcAmount;
       document.getElementById('btcModal').classList.add('active');
@@ -545,11 +705,11 @@
         width: 180, height: 180
       });
       startCountdown();
-      startFakeConfirmations();
     }
 
     function startCountdown() {
-      let sec = 3600; // 60 minutes
+      let sec = 3600;
+      clearInterval(countdownTimer);
       countdownTimer = setInterval(() => {
         sec--;
         const m = String(Math.floor(sec/60)).padStart(2,'0');
@@ -559,29 +719,53 @@
       }, 1000);
     }
 
-    function startFakeConfirmations() {
-      let conf = 0;
-      fakeConfirmTimer = setInterval(() => {
-        if (conf < 3) {
-          conf++;
-          document.getElementById('confirmations').innerHTML = `<i class="fas fa-check"></i> ${conf}/3 Confirmations`;
-        }
-      }, 8000);
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+      clearInterval(countdownTimer);
     }
 
     function copyAddr() {
       navigator.clipboard.writeText(BTC_ADDR);
-      alert("Address copied to clipboard!");
+      alert("Address copied!");
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const current = body.getAttribute('data-theme') || 'dark';
+      body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+      document.getElementById('theme-icon').classList.toggle('fa-sun');
+      document.getElementById('theme-icon').classList.toggle('fa-moon');
     }
 
     // Init
     document.getElementById('navbar').innerHTML = `
-      <div class="nav-btn active">CC SHOP</div>
-      <div class="nav-btn">FULLZ</div>
-      <div class="nav-btn">CVV</div>
-      <div class="nav-btn">RDP</div>
-      <div class="nav-btn">SUPPORT</div>
+      <div class="nav-btn active" onclick="filterCards()">CC SHOP</div>
+      <div class="nav-btn" onclick="openComingSoon()">FULLZ</div>
+      <div class="nav-btn" onclick="openComingSoon()">CVV</div>
+      <div class="nav-btn" onclick="openComingSoon()">RDP</div>
+      <div class="nav-btn"><a href="https://t.me/rakrunnin_support" target="_blank" style="color:inherit; text-decoration:none;">SUPPORT</a></div>
     `;
+
+    function openComingSoon() {
+      document.getElementById('comingSoonModal').classList.add('active');
+    }
+
+    // Dynamic online users
+    onlineTimer = setInterval(() => {
+      onlineCount += Math.floor(Math.random() * 41) - 20;
+      onlineCount = Math.max(1200, Math.min(1400, onlineCount));
+      document.getElementById('online-count').textContent = onlineCount.toLocaleString();
+    }, 30000);
+
+    // Auto-refresh stock
+    stockTimer = setInterval(() => {
+      const newCard = realCards[Math.floor(Math.random() * realCards.length)];
+      newCard.checked = "Just now";
+      realCards.unshift({...newCard, price: newCard.price - 3});
+      realCards.pop();
+      filterCards();
+    }, 120000);
+
     renderCards();
     updateCart();
     setTimeout(() => document.querySelector('.container').style.opacity = '1', 100);
