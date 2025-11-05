@@ -54,6 +54,12 @@
       justify-content: center;
       align-items: center;
       color: white;
+      opacity: 1;
+      transition: opacity 0.8s ease;
+    }
+    #loading-screen.fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
     .loader-3d {
       width: 120px;
@@ -68,7 +74,7 @@
       border-radius: 20px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.4);
       transform-style: preserve-3d;
-      animation: spin3D 3s infinite linear;
+      animation: spin3D 2s infinite linear;
     }
     .card-3d::before {
       content: '$';
@@ -92,8 +98,12 @@
       -webkit-text-fill-color: transparent;
       animation: pulse 1.5s infinite;
     }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
 
-    /* === MENU & ICONS === */
+    /* === TOP BAR === */
     .top-bar {
       position: fixed;
       top: 0; left: 0;
@@ -228,7 +238,7 @@
       font-style: italic;
     }
 
-    /* === PRODUCT PAGE === */
+    /* === PRODUCT DETAIL === */
     .product-detail {
       max-width: 800px;
       margin: 40px auto;
@@ -385,7 +395,6 @@
       cursor: pointer;
     }
 
-    /* === RESPONSIVE === */
     @media (max-width: 768px) {
       .detail-header { flex-direction: column; text-align: center; }
       .tier-selector { grid-template-columns: 1fr; }
@@ -489,6 +498,25 @@
       { id: 'accounts', name: 'Store Accounts', logo: 'https://img.icons8.com/color/100/000000/shop.png', comingSoon: true }
     ];
 
+    // === INIT ON DOM READY ===
+    document.addEventListener('DOMContentLoaded', () => {
+      // Fade out loading screen
+      const loading = document.getElementById('loading-screen');
+      setTimeout(() => {
+        loading.classList.add('fade-out');
+        setTimeout(() => {
+          loading.style.display = 'none';
+          initApp();
+        }, 800);
+      }, 1200); // Show for 1.2s max
+    });
+
+    function initApp() {
+      renderHome();
+      updateCartBadge();
+      showPage('home');
+    }
+
     function renderHome() {
       const grid = document.getElementById('product-grid');
       grid.innerHTML = '';
@@ -580,9 +608,8 @@
     function addToCart() {
       const tier = currentProduct.tiers[selectedTier];
       const item = {
-        name: `${currentProduct.name} $${tier.price} ×${quantity}`,
-        price: tier.price * quantity,
-        vbv: isNonVBV ? 'Non-VBV' : 'VBV'
+        name: `${currentProduct.name} $${tier.price} ×${quantity}${isNonVBV ? ' (Non-VBV)' : ''}`,
+        price: tier.price * quantity
       };
       cart.push(item);
       localStorage.setItem('cart', JSON.stringify(cart));
@@ -599,14 +626,13 @@
     }
 
     function generateInvoice() {
-      if (cart.length === 0) return;
+      if (cart.length === 0) return showPopup('Cart empty!');
       document.getElementById('btc-invoice').style.display = 'block';
       startCountdown();
     }
 
     function copyBTC() {
-      navigator.clipboard.writeText(BTC);
-      showPopup('Copied!');
+      navigator.clipboard.writeText(BTC).then(() => showPopup('Copied!'));
     }
 
     function startCountdown() {
@@ -640,13 +666,12 @@
       setTimeout(() => p.remove(), 3000);
     }
 
-    window.onload = () => {
-      setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
-        renderHome();
-        updateCartBadge();
-      }, 3000);
-    };
+    // Fallback in case DOMContentLoaded fails
+    window.addEventListener('load', () => {
+      if (document.getElementById('loading-screen').style.display !== 'none') {
+        setTimeout(initApp, 500);
+      }
+    });
   </script>
 </body>
 </html>
