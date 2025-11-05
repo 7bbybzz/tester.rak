@@ -1,598 +1,185 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rak's Shop — Matte Luxury</title>
-
-  <!-- Tailwind CDN for quick prototype -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <style>
-    :root{
-      --bg:#070609;
-      --panel:#0b0b0d;
-      --glass: rgba(255,255,255,0.03);
-      --glass-2: rgba(255,255,255,0.04);
-      --accent-from: #7c3aed;
-      --accent-to: #06b6d4;
-      --focus: rgba(124,58,237,0.14);
-      --ease-std: cubic-bezier(.2,.9,.2,1);
-    }
-
-    html,body { height:100%; }
-    body{
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.04), transparent 6%),
-                  radial-gradient(900px 500px at 90% 90%, rgba(6,182,212,0.02), transparent 8%),
-                  var(--bg);
-      color: #e6e6e9;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.4;
-      scroll-behavior:smooth;
-    }
-
-    /* header/wallet */
-    .topbar {
-      background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.02));
-      border: 1px solid rgba(255,255,255,0.03);
-      backdrop-filter: blur(8px);
-      transition: box-shadow .28s var(--ease-std), transform .28s var(--ease-std);
-    }
-    .topbar.scrolled { box-shadow: 0 10px 30px rgba(0,0,0,0.6); transform: translateY(-2px); }
-
-    /* glass panels */
-    .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.03);
-      backdrop-filter: blur(6px);
-    }
-
-    /* subtle rounded focus rings */
-    :focus { outline: none; box-shadow: 0 0 0 6px var(--focus); border-radius: 9px; }
-
-    /* image placeholder */
-    .img-placeholder {
-      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid rgba(255,255,255,0.03);
-      display:flex; align-items:center; justify-content:center;
-      color: #ddd;
-      font-weight:600;
-    }
-
-    /* micro-interactions */
-    .btn-smooth { transition: transform .28s var(--ease-std), box-shadow .28s var(--ease-std), filter .28s var(--ease-std); }
-    .btn-smooth:active { transform: translateY(1px) scale(.998); }
-
-    /* modal & cart animations */
-    .fade-in { animation: fadeIn .26s var(--ease-std) both; }
-    .slide-left { animation: slideLeft .32s var(--ease-std) both; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px);} to { opacity:1; transform:none; } }
-    @keyframes slideLeft { from { transform: translateX(12px); opacity:0 } to { transform:none; opacity:1 } }
-
-    /* card hover */
-    .card:hover { transform: translateY(-6px) scale(1.006); box-shadow: 0 18px 50px rgba(2,6,23,0.6); }
-
-    /* nice scrollbar for dark */
-    ::-webkit-scrollbar { height:10px; width:10px; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius:10px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rak's Shop — Ultimate Jason Edition</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+:root{
+  --bg:#060507; --card:#0b0b0d;
+  --glass: rgba(255,255,255,0.02);
+  --accent-from: #7c3aed; --accent-to: #06b6d4;
+  --gold:#b4904a;
+  --ease: cubic-bezier(.2,.9,.2,1);
+}
+html,body{height:100%;scroll-behavior:smooth;margin:0;font-family:Inter,sans-serif;color:#e6e6e9;background:var(--bg);}
+.container{max-width:1100px;margin:0 auto;padding:28px;}
+header.sitebar{position:fixed;top:18px;left:0;right:0;z-index:60;backdrop-filter:blur(8px);display:flex;justify-content:center;pointer-events:none}
+header.sitebar > .inner{pointer-events:auto;width:100%;max-width:1100px;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.014), rgba(0,0,0,0.02));border-radius:14px;border:1px solid rgba(255,255,255,0.03);}
+.logo{display:flex;align-items:center;gap:12px}
+.logo .brand{font-weight:700;letter-spacing:-0.5px}
+.wallet{display:flex;align-items:center;gap:8px}
+.page{min-height:calc(100vh - 120px);padding-top:80px;padding-bottom:60px;opacity:0;transform:translateY(10px);transition:all .45s var(--ease)}
+.page.active{opacity:1;transform:none}
+.card{background:linear-gradient(180deg, rgba(255,255,255,0.018), rgba(0,0,0,0.02));border:1px solid rgba(255,255,255,0.03);border-radius:14px;padding:16px;transition:transform .32s var(--ease), box-shadow .32s var(--ease);backdrop-filter: blur(6px);}
+.card:hover{transform:translateY(-8px);box-shadow:0 18px 60px rgba(2,6,23,0.7);}
+.btn{padding:10px 14px;border-radius:12px;display:inline-flex;align-items:center;gap:8px;font-weight:600;cursor:pointer}
+.btn-accent{background:linear-gradient(90deg,var(--accent-from),var(--accent-to));box-shadow:0 12px 40px rgba(7,10,20,0.6)}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+.muted{color:#9b9ba0;font-size:0.92rem}
+.small{font-size:0.85rem}
+.sep{height:1px;background:rgba(255,255,255,0.02);margin:14px 0;border-radius:2px}
+aside.cart{position:fixed;right:18px;top:90px;width:360px;background:var(--card);border-left:1px solid rgba(255,255,255,0.02);height:calc(100vh - 120px);border-radius:12px;padding:12px;box-shadow:0 30px 80px rgba(2,6,23,0.75);transform:translateX(120%);transition:transform .36s var(--ease);z-index:70;}
+aside.cart.open{transform:translateX(0);}
+.product-hero{display:flex;gap:18px;align-items:center}
+.img-hero{width:360px;height:280px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+.mask-svg{width:68px;height:68px;opacity:0.95;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.55));transition:transform .48s var(--ease);}
+.mask-svg:hover{transform:scale(1.08) rotateY(10deg) rotateX(4deg);}
+.page-enter{animation:pageIn .48s var(--ease) both;}
+@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+</style>
 </head>
 <body>
 
-  <!-- Header with wallet -->
-  <header class="fixed top-4 left-0 right-0 px-6 z-40">
-    <div id="topbar" class="max-w-6xl mx-auto rounded-2xl p-3 flex items-center justify-between gap-4 topbar">
-      <div class="flex items-center gap-3">
-        <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-[color:var(--accent-from)] to-[color:var(--accent-to)] flex items-center justify-center shadow-lg transform transition-transform duration-300">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="white" stroke-width="1.6" stroke-linecap="round"/><path d="M6 6h12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path d="M6 18h12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/></svg>
-        </div>
-        <div>
-          <div class="text-lg font-semibold tracking-tight">Rak's Shop</div>
-          <div class="text-xs text-gray-400 -mt-0.5">Matte · Luxury · Collectible economy</div>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <nav class="hidden md:flex items-center gap-3 text-sm text-gray-300">
-          <a href="#products" class="px-3 py-2 rounded-md hover:bg-white/4 transition">Shop</a>
-          <a href="#about" class="px-3 py-2 rounded-md hover:bg-white/4 transition">About</a>
-        </nav>
-
-        <!-- Wallet -->
-        <div class="flex items-center gap-3">
-          <div class="glass rounded-xl px-4 py-2 flex items-center gap-3">
-            <div class="text-xs text-gray-400">Credits</div>
-            <div id="wallet-balance" class="font-semibold text-lg">$0.00</div>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button id="add-10" class="btn-smooth px-3 py-2 rounded-xl glass text-sm hover:brightness-105">+ $10</button>
-            <div class="relative">
-              <input id="custom-amt" type="number" min="1" placeholder="$" class="w-20 bg-transparent border border-white/6 rounded-xl px-3 py-2 text-sm focus:border-white/20" />
-            </div>
-            <button id="add-custom" class="btn-smooth px-3 py-2 rounded-xl bg-gradient-to-r from-[color:var(--accent-from)] to-[color:var(--accent-to)] shadow font-medium text-sm">Top up</button>
-          </div>
-
-          <button id="cart-btn" aria-label="Open cart" class="ml-2 px-3 py-2 rounded-xl glass btn-smooth hover:scale-105 relative">
-            <svg class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="cart-count" class="absolute -top-2 -right-2 bg-[#fb7185] text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main -->
-  <main class="pt-40 pb-24">
-    <section class="max-w-6xl mx-auto px-6">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-        <div class="space-y-6">
-          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
-            Rak's Shop — <span style="background:linear-gradient(90deg,var(--accent-from),var(--accent-to)); -webkit-background-clip:text; background-clip:text; color:transparent;">Where Value Levels Up</span>
-          </h1>
-          <p class="text-gray-400 max-w-xl">
-            A matte-luxury prototype with product variants and a credit-gated checkout. Browse freely — checkout requires a wallet balance of <strong>$25</strong> or more.
-          </p>
-          <div class="flex gap-3">
-            <a href="#products" class="inline-flex items-center px-6 py-3 rounded-xl shadow-lg glass hover:scale-105 transition transform">Browse Products</a>
-            <a href="#about" class="inline-flex items-center px-4 py-3 rounded-xl border border-white/6 text-sm hover:brightness-110 transition">About</a>
-          </div>
-        </div>
-
-        <div class="rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-500 hover:scale-102">
-          <div class="w-full h-64 img-placeholder flex-col">
-            <div class="text-2xl">✨ Featured Drop</div>
-            <div class="text-xs text-gray-300 mt-2">Limited mock — Product 1 variants inside</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Products -->
-    <section id="products" class="max-w-6xl mx-auto px-6 mt-12">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-xl font-semibold">Products</h2>
-        <div class="text-sm text-gray-400">Showing <span id="product-count">6</span> items</div>
-      </div>
-
-      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <!-- JS generates cards -->
-      </div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="max-w-6xl mx-auto px-6 mt-14 mb-28">
-      <div class="glass p-6 rounded-2xl">
-        <h3 class="text-lg font-semibold">About this mock</h3>
-        <p class="text-gray-400 mt-2">
-          This is a refined static prototype focused on the "credit-gated" checkout flow and product variants. Credits are stored locally (for prototyping) — when ready we can wire up payments and real user accounts.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <!-- Cart Sidebar -->
-  <aside id="cart" class="fixed top-0 right-0 h-full w-full md:w-96 max-w-full z-50 transform translate-x-full bg-[#06050a] shadow-2xl">
-    <div class="h-full flex flex-col">
-      <div class="p-6 flex items-center justify-between border-b border-white/5">
-        <div>
-          <div class="text-lg font-semibold">Your Cart</div>
-          <div class="text-sm text-gray-400">Persistent in your browser</div>
-        </div>
-        <button id="close-cart" aria-label="Close cart" class="p-2 rounded-md hover:bg-white/3 transition">✕</button>
-      </div>
-
-      <div id="cart-items" class="p-6 space-y-4 overflow-auto flex-1">
-        <!-- items inserted here -->
-      </div>
-
-      <div class="p-6 border-t border-white/5">
-        <div class="flex items-center justify-between mb-4">
-          <div class="text-sm text-gray-400">Subtotal</div>
-          <div id="cart-subtotal" class="text-lg font-semibold">$0.00</div>
-        </div>
-        <div class="flex gap-3">
-          <button id="checkout-btn" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-[color:var(--accent-from)] to-[color:var(--accent-to)] font-medium shadow hover:brightness-105 transition">Checkout</button>
-          <button id="clear-cart" class="py-3 px-4 rounded-xl border border-white/6 text-sm hover:bg-white/3 transition">Clear</button>
-        </div>
-        <div class="text-xs text-gray-400 mt-3">
-          Note: To complete checkout you must have <strong>$25</strong> or more in credits. If your cart subtotal exceeds your balance, you'll be prompted to top up.
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <!-- Modal Quick View -->
-  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-6">
-    <div id="modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
-    <div class="relative max-w-3xl w-full rounded-2xl overflow-hidden glass shadow-2xl fade-in">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
-        <div class="md:col-span-1">
-          <div id="modal-image" class="h-48 rounded-lg img-placeholder"></div>
-        </div>
-        <div class="md:col-span-2">
-          <div class="flex items-start justify-between">
-            <div>
-              <h4 id="modal-title" class="text-xl font-semibold">Product Title</h4>
-              <div id="modal-sku" class="text-xs text-gray-400 mt-1">SKU: -</div>
-            </div>
-            <button id="modal-close" class="text-gray-300 hover:text-white p-2">✕</button>
-          </div>
-
-          <p id="modal-desc" class="text-gray-400 mt-4">Product description will show here. Choose a variant and add to cart.</p>
-
-          <!-- Variant selector & price -->
-          <div class="mt-6">
-            <label class="text-xs text-gray-400">Variant</label>
-            <div id="variant-wrap" class="flex gap-3 mt-2">
-              <!-- buttons inserted by JS -->
-            </div>
-
-            <div class="mt-6 flex items-center gap-4">
-              <div>
-                <div class="text-xs text-gray-400">Price</div>
-                <div id="modal-price" class="text-2xl font-bold">$0.00</div>
-              </div>
-
-              <div class="ml-auto flex items-center gap-2">
-                <button id="qty-dec" class="px-3 py-2 rounded-lg border border-white/6">−</button>
-                <div id="qty" class="min-w-[36px] text-center">1</div>
-                <button id="qty-inc" class="px-3 py-2 rounded-lg border border-white/6">+</button>
-                <button id="modal-add" class="ml-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[color:var(--accent-from)] to-[color:var(--accent-to)] font-medium shadow transition">Add to cart</button>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="fixed right-6 bottom-6 z-60 hidden rounded-lg p-4 glass shadow transition">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-full bg-green-500/80 flex items-center justify-center">✓</div>
+<header class="sitebar">
+  <div class="inner">
+    <div class="logo">
+      <svg class="mask-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="64" height="64" rx="12" fill="black" />
+        <path d="M32 6c8 0 16 1.8 16 12 0 8.4-3.6 18.2-6 22-2.4 3.8-9.1 9-19 9s-16.6-5.2-19-9C11.6 36 8 26.4 8 18c0-10 8-12 16-12z" fill="#0b0b0d"/>
+        <ellipse cx="21" cy="36" rx="3" ry="4" fill="#aab0b6"/>
+        <ellipse cx="43" cy="36" rx="3" ry="4" fill="#aab0b6"/>
+        <path d="M18 24c3 2 12 2 28 0" stroke="#bfbfbf" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M25 14c1.8 0 1.6 4 0 4s-1.6-4 0-4zM39 14c1.8 0 1.6 4 0 4s-1.6-4 0-4z" fill="#bfbfbf"/>
+      </svg>
       <div>
-        <div id="toast-title" class="font-semibold">Added to cart</div>
-        <div id="toast-sub" class="text-xs text-gray-300">Product 1 was added</div>
+        <div class="brand">Rak's Shop</div>
+        <div class="muted small">Matte · Luxe · Collector economy</div>
       </div>
     </div>
+    <div class="wallet">
+      <div class="muted small">Credits</div>
+      <div id="wallet" style="font-weight:800">$0.00</div>
+      <button id="goto-credits" class="btn btn-ghost small">Top up</button>
+      <button id="open-cart" class="btn btn-ghost small">Cart (<span id="cart-count">0</span>)</button>
+    </div>
   </div>
+</header>
 
-  <script>
-    /* ---------- DATA ---------- */
-    const PRODUCTS = [
-      // Product 1 has variants
-      { id: "p1", title: "Product 1", sku: "RS-001", desc: "Collectible with variants. Prices rise with condition.", variants: [
-        { id: "p1-v-used", label: "Used", price: 12.00 },
-        { id: "p1-v-mint", label: "Mint", price: 40.00 },
-        { id: "p1-v-sealed", label: "Sealed", price: 70.00 }
-      ]},
-      // others single price
-      { id: "p2", title: "Product 2", sku: "RS-002", desc: "Collector-friendly style.", price: 32.50 },
-      { id: "p3", title: "Product 3", sku: "RS-003", desc: "Premium mock product.", price: 99.00 },
-      { id: "p4", title: "Product 4", sku: "RS-004", desc: "Affordable option.", price: 15.00 },
-      { id: "p5", title: "Product 5", sku: "RS-005", desc: "Limited-run concept.", price: 75.25 },
-      { id: "p6", title: "Product 6", sku: "RS-006", desc: "Everyday collectible.", price: 22.00 }
-    ];
+<main class="container">
 
-    /* ---------- STORAGE KEYS ---------- */
-    const CART_KEY = 'raks_cart_v2';
-    const CREDITS_KEY = 'raks_credits_v1';
-
-    /* ---------- UTIL ---------- */
-    const $ = s => document.querySelector(s);
-    const $$ = s => Array.from(document.querySelectorAll(s));
-    function money(n){ return `$${n.toFixed(2)}`; }
-
-    /* ---------- CART & CREDITS ---------- */
-    let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}'); // { itemKey: qty } itemKey e.g. p1|p1-v-used
-    let credits = parseFloat(localStorage.getItem(CREDITS_KEY) || '0');
-
-    function saveCart(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); updateCartUI(); }
-    function saveCredits(){ localStorage.setItem(CREDITS_KEY, credits.toString()); updateWalletUI(); }
-
-    function addCredits(amount){
-      credits = Math.max(0, Number(credits) + Number(amount));
-      saveCredits();
-      showToast('Wallet topped', money(Number(amount)));
-    }
-
-    function addToCart(itemKey, qty = 1){
-      cart[itemKey] = (cart[itemKey] || 0) + qty;
-      saveCart();
-      showToast('Added to cart', itemKey.split('|')[0]);
-    }
-
-    function removeFromCart(itemKey){
-      delete cart[itemKey];
-      saveCart();
-    }
-
-    function setQty(itemKey, qty){
-      if(qty <= 0) removeFromCart(itemKey);
-      else { cart[itemKey] = qty; saveCart(); }
-    }
-
-    function clearCart(){ cart = {}; saveCart(); }
-
-    function cartEntries(){
-      return Object.entries(cart).map(([key, qty]) => {
-        // key format: pid or pid|variantId
-        const [pid, vid] = key.split('|');
-        const product = PRODUCTS.find(p => p.id === pid);
-        if(!product) return null;
-        let price = product.price || (product.variants && product.variants.find(v=>v.id===vid)?.price) || 0;
-        let label = product.title + (vid ? ` • ${product.variants.find(v=>v.id===vid).label}` : '');
-        return { key, pid, vid, title: label, sku: product.sku, price, qty, line: price * qty };
-      }).filter(Boolean);
-    }
-
-    function cartSubtotal(){
-      return cartEntries().reduce((s,e)=>s+e.line, 0);
-    }
-
-    /* ---------- RENDER PRODUCTS ---------- */
-    const grid = $('#products-grid');
-    function renderProducts(){
-      grid.innerHTML = '';
-      PRODUCTS.forEach(p=>{
-        const card = document.createElement('article');
-        card.className = "card group bg-[#08060a] rounded-2xl p-4 transition-transform duration-300 hover:-translate-y-1";
-        const priceText = p.price ? money(p.price) : money(p.variants[0].price) + ' — variants';
-        card.innerHTML = `
-          <button data-pid="${p.id}" class="w-full text-left focus:outline-none">
-            <div class="w-full h-44 rounded-lg img-placeholder overflow-hidden transition-all duration-400 group-hover:scale-102">
-              <div class="flex flex-col items-center justify-center h-full">
-                <div class="text-lg">${p.title}</div>
-                <div class="text-xs text-gray-300 mt-2">${priceText}</div>
-              </div>
-            </div>
-          </button>
-          <div class="mt-4 flex items-center justify-between">
-            <div>
-              <div class="font-semibold">${p.title}</div>
-              <div class="text-xs text-gray-400">${p.sku}</div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button data-pid="${p.id}" class="quick-btn px-3 py-1 rounded-lg glass text-sm hover:scale-105 transition">Quick View</button>
-            </div>
+  <!-- HERO PAGE -->
+  <section id="home" class="page active page-enter">
+    <div style="display:flex;align-items:center;gap:26px;justify-content:space-between;flex-wrap:wrap">
+      <div style="flex:1;min-width:300px;max-width:640px">
+        <h1 style="font-size:44px;line-height:1.02;font-weight:800">Rak's Shop — Where Value Levels Up</h1>
+        <p class="muted" style="margin-top:12px;max-width:540px">Matte-luxury concept storefront. Browse freely — checkout requires <strong>$25 credits</strong>.</p>
+        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+          <button id="btn-browse" class="btn btn-accent">Browse Products</button>
+        </div>
+      </div>
+      <div style="width:420px;min-width:280px">
+        <div class="card product-hero">
+          <div class="img-hero">FEATURED — PRODUCT 1</div>
+          <div style="flex:1;margin-top:12px">
+            <button class="btn btn-accent" data-pid="p1" onclick="navigateToProduct('p1')">View Product</button>
           </div>
-        `;
-        grid.appendChild(card);
-      });
-      $('#product-count').textContent = PRODUCTS.length;
-    }
+        </div>
+      </div>
+    </div>
+  </section>
 
-    /* ---------- UI: Wallet ---------- */
-    function updateWalletUI(){
-      $('#wallet-balance').textContent = money(credits);
-    }
+  <!-- PRODUCTS GRID PAGE -->
+  <section id="products" class="page" data-route="/products">
+    <h2 style="font-weight:800;font-size:20px">Products</h2>
+    <div style="margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px" id="all-grid"></div>
+  </section>
 
-    $('#add-10').addEventListener('click', ()=>{ addCredits(10); });
-    $('#add-custom').addEventListener('click', ()=>{
-      const v = Number($('#custom-amt').value);
-      if(!v || v <= 0){ alert('Enter an amount'); return; }
-      addCredits(v);
-      $('#custom-amt').value = '';
-    });
+  <!-- PRODUCT DETAIL PAGE -->
+  <section id="product-page" class="page" data-route="/product"></section>
 
-    /* ---------- Modal Quick View ---------- */
-    const modal = $('#modal');
-    const modalBackdrop = $('#modal-backdrop');
-    let curModalProduct = null;
-    let curVariantId = null;
-    let curQty = 1;
+  <!-- CREDITS PAGE -->
+  <section id="credits" class="page" data-route="/credits">
+    <h2 style="font-weight:800;font-size:20px">Credits — Top up with BTC</h2>
+    <p class="muted small" style="margin-top:8px">Minimum balance of <strong>$25</strong> required to checkout.</p>
+    <div style="margin-top:18px" class="card">
+      <input id="top-amt" type="number" min="1" placeholder="Amount (USD)" class="w-48 p-2 rounded-md bg-transparent border border-gray-700" />
+      <button id="gen-invoice" class="btn btn-accent">Generate Invoice</button>
+      <button id="quick-10" class="btn btn-ghost">+$10</button>
+    </div>
+    <div style="margin-top:12px" class="card">
+      <div id="invoices-area" class="muted small">No invoices yet</div>
+    </div>
+  </section>
 
-    function openModalFor(pid){
-      const product = PRODUCTS.find(x=>x.id===pid);
-      if(!product) return;
-      curModalProduct = product;
-      curQty = 1;
-      renderModalContent(product);
-      modal.classList.remove('hidden'); modal.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-    }
+</main>
 
-    function closeModal(){
-      modal.classList.add('hidden'); modal.classList.remove('flex');
-      document.body.style.overflow = '';
-    }
+<!-- CART DRAWER -->
+<aside class="cart" id="cart-drawer">
+  <h2 class="font-bold text-lg">Cart</h2>
+  <div id="cart-items" style="margin-top:12px"></div>
+  <div class="sep"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div class="font-bold">Total:</div>
+    <div id="cart-total" class="font-bold">$0.00</div>
+  </div>
+  <button id="checkout-btn" class="btn btn-accent w-full mt-4">Checkout</button>
+</aside>
 
-    function renderModalContent(product){
-      $('#modal-title').textContent = product.title;
-      $('#modal-sku').textContent = `SKU: ${product.sku}`;
-      $('#modal-desc').textContent = product.desc || '';
-      $('#modal-image').textContent = product.title.split(' ')[1] || 'P';
+<script>
+// SPA Page Navigation
+const pages = document.querySelectorAll('.page');
+function showPage(id){pages.forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
-      // variants
-      const wrap = $('#variant-wrap'); wrap.innerHTML = '';
-      if(product.variants && product.variants.length){
-        product.variants.forEach((v,i)=>{
-          const btn = document.createElement('button');
-          btn.className = `px-3 py-2 rounded-xl text-sm border ${i===0 ? 'border-white/10':''} focus:outline-none btn-smooth`;
-          btn.textContent = `${v.label} — ${money(v.price)}`;
-          btn.dataset.vid = v.id;
-          btn.addEventListener('click', ()=> {
-            curVariantId = v.id;
-            $$('#variant-wrap button').forEach(b=>b.classList.remove('border-white/10'));
-            btn.classList.add('border-white/10');
-            updateModalPrice();
-          });
-          wrap.appendChild(btn);
-        });
-        // default select first
-        curVariantId = product.variants[0].id;
-        wrap.querySelector('button').classList.add('border-white/10');
-      } else {
-        // no variants
-        curVariantId = null;
-      }
-      $('#qty').textContent = curQty;
-      updateModalPrice();
-    }
+// Wallet / Cart
+let wallet = 0; let cart = []; 
+function updateWallet(){document.getElementById('wallet').innerText = '$'+wallet.toFixed(2);}
+function updateCart(){document.getElementById('cart-count').innerText = cart.length; let total=0; cart.forEach(i=>total+=i.price*i.qty); document.getElementById('cart-total').innerText='$'+total.toFixed(2);}
+document.getElementById('goto-credits').onclick = ()=>showPage('credits');
+document.getElementById('btn-browse').onclick = ()=>showPage('products');
+document.getElementById('open-cart').onclick = ()=>document.getElementById('cart-drawer').classList.toggle('open');
 
-    function updateModalPrice(){
-      let price = 0;
-      if(curModalProduct.variants && curVariantId){
-        price = curModalProduct.variants.find(v=>v.id===curVariantId).price;
-      } else { price = curModalProduct.price || 0; }
-      $('#modal-price').textContent = money(price * curQty);
-    }
+// Dummy products
+const products=[{id:'p1',name:'Product 1',variants:[{name:'Used',price:12},{name:'Mint',price:35},{name:'Sealed',price:70}]}];
+const grid=document.getElementById('all-grid');
+products.forEach(p=>{
+  const c=document.createElement('div'); c.className='card';
+  c.innerHTML=`<div class="font-bold">${p.name}</div><div class="muted small">Variants: ${p.variants.map(v=>v.name).join(' • ')}</div>
+  <div style="margin-top:8px"><button class="btn btn-accent" onclick="navigateToProduct('${p.id}')">View</button></div>`;
+  grid.appendChild(c);
+});
 
-    $('#qty-inc').addEventListener('click', ()=>{ curQty++; $('#qty').textContent = curQty; updateModalPrice(); });
-    $('#qty-dec').addEventListener('click', ()=>{ if(curQty>1) curQty--; $('#qty').textContent = curQty; updateModalPrice(); });
+// Product page navigation
+function navigateToProduct(pid){
+  const p=products.find(x=>x.id===pid); 
+  const page=document.getElementById('product-page'); 
+  page.innerHTML=`<h2 class="font-bold text-xl">${p.name}</h2>
+    <div style="margin-top:12px">
+    ${p.variants.map(v=>`<div class="card flex justify-between items-center"><div>${v.name}</div><div>$${v.price}</div>
+    <button class="btn btn-accent" onclick="addToCart('${pid}','${v.name}',${v.price})">Add to Cart</button></div>`).join('')}
+    </div>`;
+  showPage('product-page');
+}
 
-    $('#modal-add').addEventListener('click', ()=>{
-      // build item key
-      const pid = curModalProduct.id;
-      const key = curVariantId ? `${pid}|${curVariantId}` : pid;
-      addToCart(key, curQty);
-      closeModal();
-    });
+// Cart
+function addToCart(pid,variant,price){
+  cart.push({pid,variant,price,qty:1});
+  updateCart();
+  document.getElementById('cart-drawer').classList.add('open');
+}
 
-    $('#modal-close').addEventListener('click', closeModal);
-    modalBackdrop.addEventListener('click', closeModal);
+// Credits
+document.getElementById('quick-10').onclick=()=>{wallet+=10;updateWallet();}
+document.getElementById('gen-invoice').onclick=()=>{
+  const amt=Number(document.getElementById('top-amt').value); if(!amt)return alert('Enter amount'); const btc=(amt/103926).toFixed(6);
+  const div=document.createElement('div'); div.className='card'; div.innerHTML=`Invoice: $${amt} → ${btc} BTC<br>Address: 1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy <button class="btn btn-accent small" onclick="wallet+=${amt};updateWallet();this.parentElement.remove();">Mark Paid (simulate)</button>`;
+  document.getElementById('invoices-area').appendChild(div);
+  document.getElementById('top-amt').value='';
+}
 
-    /* ---------- Cart UI ---------- */
-    function updateCartUI(){
-      const wrap = $('#cart-items'); wrap.innerHTML = '';
-      const entries = cartEntries();
-      if(entries.length === 0){
-        wrap.innerHTML = `<div class="text-gray-400">Your cart is empty — add something interesting.</div>`;
-      } else {
-        entries.forEach(e=>{
-          const row = document.createElement('div');
-          row.className = "flex items-center gap-4";
-          row.innerHTML = `
-            <div class="w-14 h-14 rounded-md img-placeholder flex-shrink-0">${(e.title||'P').split(' ')[1]||'P'}</div>
-            <div class="flex-1 min-w-0">
-              <div class="font-semibold truncate">${e.title}</div>
-              <div class="text-xs text-gray-400">SKU: ${e.sku}</div>
-              <div class="text-xs text-gray-400 mt-1">${money(e.price)} × ${e.qty} = <span class="font-medium">${money(e.line)}</span></div>
-            </div>
-            <div class="flex items-center gap-2">
-              <button class="dec px-2 py-1 rounded-md border border-white/6" data-key="${e.key}">−</button>
-              <div class="px-2">${e.qty}</div>
-              <button class="inc px-2 py-1 rounded-md border border-white/6" data-key="${e.key}">+</button>
-              <button class="ml-2 text-sm text-red-400 remove" data-key="${e.key}">Remove</button>
-            </div>
-          `;
-          wrap.appendChild(row);
-        });
-      }
-      $('#cart-subtotal').textContent = money(cartSubtotal());
-      const totalCount = Object.values(cart).reduce((a,b)=>a+b,0);
-      $('#cart-count').textContent = totalCount;
-      saveCartToLSNoRender(); // ensure saved without endless loop
-    }
-
-    function saveCartToLSNoRender(){ localStorage.setItem(CART_KEY, JSON.stringify(cart)); }
-
-    // delegation for cart buttons
-    document.addEventListener('click', (e)=>{
-      if(e.target.matches('.inc')){
-        const key = e.target.dataset.key; cart[key] = (cart[key]||0)+1; saveCart();
-      }
-      if(e.target.matches('.dec')){
-        const key = e.target.dataset.key; cart[key] = Math.max(0, (cart[key]||0)-1);
-        if(cart[key]===0) delete cart[key];
-        saveCart();
-      }
-      if(e.target.matches('.remove')){
-        const key = e.target.dataset.key; removeFromCart(key);
-      }
-
-      // open cart
-      if(e.target.id === 'cart-btn') openCart();
-      if(e.target.id === 'close-cart') closeCart();
-
-      // quick view from product list
-      if(e.target.closest('.quick-btn')){
-        const pid = e.target.closest('[data-pid]')?.dataset?.pid || e.target.dataset?.pid;
-        if(pid) openModalFor(pid);
-      }
-
-      // product card click -> open modal
-      if(e.target.closest('[data-pid]') && e.target.tagName === 'BUTTON' && e.target.dataset.pid){
-        const pid = e.target.dataset.pid;
-        openModalFor(pid);
-      }
-    });
-
-    /* ---------- Cart open/close ---------- */
-    function openCart(){ $('#cart').style.transform = 'translateX(0)'; document.body.style.overflow = 'hidden'; $('#close-cart').focus(); }
-    function closeCart(){ $('#cart').style.transform = 'translateX(100%)'; document.body.style.overflow = ''; }
-
-    /* ---------- Checkout logic ---------- */
-    $('#checkout-btn').addEventListener('click', ()=>{
-      const subtotal = cartSubtotal();
-      if(subtotal === 0){ showToast('Cart empty', 'Add something first'); return; }
-
-      // require minimum balance to attempt checkout (user requested): 25
-      if(credits < 25){
-        // open a polite modal / prompt
-        const needed = 25 - credits;
-        if(confirm(`You need at least $25 in credits to checkout. Add $${needed.toFixed(2)} now?`)){
-          addCredits(needed);
-        }
-        return;
-      }
-
-      // now make sure they have enough credits to pay subtotal
-      if(credits < subtotal){
-        const need = (subtotal - credits).toFixed(2);
-        if(confirm(`Your balance is ${money(credits)} but cart is ${money(subtotal)}. Top up $${need}?`)){
-          // auto top up required amount
-          addCredits(Number(need));
-          // now we fall through to place order after adding
-        } else return;
-      }
-
-      // After passes, charge credits and place order
-      credits = Number((credits - subtotal).toFixed(2));
-      saveCredits();
-      clearCart();
-      closeCart();
-      showToast('Order placed', `Charged ${money(subtotal)} from credits.`);
-    });
-
-    /* ---------- Toast ---------- */
-    let toastTimer;
-    function showToast(title, sub){
-      const toast = $('#toast');
-      $('#toast-title').textContent = title; $('#toast-sub').textContent = sub || '';
-      toast.classList.remove('hidden'); toast.classList.add('fade-in','slide-left');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(()=>{ toast.classList.add('hidden'); toast.classList.remove('fade-in','slide-left'); }, 2000);
-    }
-
-    /* ---------- Misc ---------- */
-    window.addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape'){ if(!$('#modal').classList.contains('hidden')) closeModal(); if($('#cart').style.transform === 'translateX(0)') closeCart(); }
-    });
-
-    window.addEventListener('scroll', ()=>{
-      const tb = document.getElementById('topbar');
-      if(window.scrollY > 12) tb.classList.add('scrolled'); else tb.classList.remove('scrolled');
-    });
-
-    /* ---------- Init ---------- */
-    (function init(){
-      renderProducts();
-      updateWalletUI();
-      updateCartUI();
-
-      // ensure cart saved initial
-      saveCartToLSNoRender();
-    })();
-
-    // expose small helper for dev console
-    window.RAKS = { PRODUCTS, cart, credits, addCredits, addToCart, clearCart };
-  </script>
+updateWallet(); updateCart();
+</script>
 
 </body>
 </html>
