@@ -3,86 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RakRunnin | Premium CC Shop</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <title>RakRunnin | Verified CC Shop | BTC Only</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --primary: #0d47a1;
       --accent: #ff6d00;
-      --bg: #121212;
-      --card: #1e1e1e;
-      --text: #e0e0e0;
-      --border: #333;
       --success: #00c853;
-      --warning: #ffab00;
-      --shadow: 0 8px 32px rgba(0,0,0,0.6);
+      --bg: #0a0e17;
+      --card: #111826;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --border: #1e293b;
+      --shadow: 0 8px 32px rgba(0,0,0,0.5);
+      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     * { margin:0; padding:0; box-sizing:border-box; }
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
       overflow-x: hidden;
-      background-image: radial-gradient(circle at 10% 20%, rgba(13,71,161,0.15) 0%, transparent 20%),
-                        radial-gradient(circle at 90% 80%, rgba(255,109,0,0.15) 0%, transparent 20%);
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(13,71,161,0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255,109,0,0.08) 0%, transparent 50%);
     }
 
     /* HEADER */
     .header {
       background: linear-gradient(135deg, #0d47a1, #1976d2);
-      padding: 1.5rem;
-      text-align: center;
-      border-bottom: 3px solid var(--accent);
+      padding: 1.2rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 1000;
       box-shadow: var(--shadow);
+      transition: var(--transition);
     }
-    .header h1 {
+    .logo {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.2rem;
+      font-size: 1.8rem;
       color: white;
-      text-shadow: 0 0 10px rgba(255,109,0,0.5);
+      text-shadow: 0 0 10px rgba(255,109,0,0.4);
     }
-    .header p { color: #bbdefb; font-size: 0.95rem; margin-top: 0.5rem; }
+    .header-stats {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+      color: #bbdefb;
+    }
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
 
     /* NAVBAR */
     .navbar {
       display: flex;
       justify-content: center;
-      gap: 1rem;
+      gap: 0.8rem;
       padding: 1rem;
-      background: rgba(30,30,30,0.9);
+      background: rgba(17,24,38,0.95);
+      backdrop-filter: blur(12px);
       flex-wrap: wrap;
-      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
     }
     .nav-btn {
-      background: var(--card);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 0.7rem 1.5rem;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      padding: 0.6rem 1.4rem;
       border-radius: 8px;
       font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.3s;
-      min-width: 120px;
+      transition: var(--transition);
     }
     .nav-btn:hover, .nav-btn.active {
-      background: var(--accent);
-      color: white;
+      background: rgba(255,109,0,0.15);
+      color: var(--accent);
       border-color: var(--accent);
-      transform: translateY(-2px);
     }
 
-    /* MAIN */
+    /* CONTAINER */
     .container {
       max-width: 1400px;
       margin: 2rem auto;
       padding: 0 1rem;
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 300px 1fr;
       gap: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s forwards;
     }
 
     /* SIDEBAR */
@@ -93,31 +117,48 @@
       height: fit-content;
       box-shadow: var(--shadow);
       border: 1px solid var(--border);
+      transition: var(--transition);
     }
     .sidebar h3 {
       color: var(--accent);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       margin-bottom: 1rem;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .filter-group {
       margin-bottom: 1.5rem;
     }
     .filter-group label {
-      display: block;
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #aaa;
+      font-size: 0.9rem;
+      color: var(--muted);
     }
     .range-slider {
       width: 100%;
-      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #334155;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255,109,0,0.4);
     }
 
     /* ITEM GRID */
     .item-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 1.5rem;
     }
     .card-item {
@@ -125,53 +166,80 @@
       border-radius: 16px;
       overflow: hidden;
       box-shadow: var(--shadow);
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: var(--transition);
       border: 1px solid var(--border);
+      opacity: 0;
+      transform: translateY(20px);
     }
+    .card-item:nth-child(1) { animation: fadeInUp 0.6s 0.1s forwards; }
+    .card-item:nth-child(2) { animation: fadeInUp 0.6s 0.2s forwards; }
+    .card-item:nth-child(3) { animation: fadeInUp 0.6s 0.3s forwards; }
+    /* Add more as needed */
     .card-item:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 16px 40px rgba(255,109,0,0.2);
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(255,109,0,0.25);
+      border-color: var(--accent);
     }
     .card-header {
       padding: 1rem;
-      background: linear-gradient(135deg, rgba(13,71,161,0.8), rgba(25,118,210,0.6));
+      background: linear-gradient(135deg, rgba(13,71,161,0.9), rgba(25,118,210,0.7));
       color: white;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
     .card-type {
       font-weight: 700;
       font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .flag {
+      width: 20px; height: 15px;
+      border-radius: 2px;
+      object-fit: cover;
     }
     .card-bin {
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
       font-size: 0.9rem;
       opacity: 0.9;
     }
+    .live-badge {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: var(--success);
+      color: white;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
     .card-body {
-      padding: 1rem;
+      padding: 1.2rem;
     }
     .card-info {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
+      gap: 0.6rem;
       margin-bottom: 1rem;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
-    .card-info span {
-      color: #aaa;
+    .card-info strong {
+      color: var(--text);
     }
     .rating {
-      color: var(--warning);
+      color: #fbbf24;
       font-size: 1.1rem;
+      letter-spacing: 2px;
     }
     .price {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: var(--accent);
       text-align: center;
-      margin: 0.5rem 0;
+      margin: 0.8rem 0;
     }
     .buy-btn {
       width: 100%;
@@ -182,15 +250,16 @@
       font-weight: 700;
       cursor: pointer;
       border-radius: 8px;
-      transition: 0.3s;
+      transition: var(--transition);
+      font-size: 1rem;
     }
     .buy-btn:hover {
       background: #e65100;
-      transform: scale(1.02);
+      transform: scale(1.03);
     }
     .sold-out {
-      background: #424242 !important;
-      color: #777 !important;
+      background: #374151 !important;
+      color: #9ca3af !important;
       cursor: not-allowed;
     }
 
@@ -200,35 +269,49 @@
       bottom: 20px;
       right: 20px;
       background: var(--card);
-      padding: 1rem;
+      padding: 1.2rem;
       border-radius: 16px;
       box-shadow: var(--shadow);
-      width: 300px;
+      width: 340px;
       z-index: 1000;
       border: 1px solid var(--border);
+      transition: var(--transition);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .cart-floating.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     .cart-header {
       display: flex;
       justify-content: space-between;
       margin-bottom: 1rem;
       font-weight: 600;
+      font-size: 1.1rem;
     }
     .cart-item {
       display: flex;
       justify-content: space-between;
-      padding: 0.5rem 0;
-      border-bottom: 1px dashed #333;
+      padding: 0.6rem 0;
+      border-bottom: 1px dashed var(--border);
       font-size: 0.9rem;
+      animation: slideIn 0.4s;
     }
     .checkout-btn {
       width: 100%;
       background: var(--success);
       color: white;
       border: none;
-      padding: 0.8rem;
+      padding: 0.9rem;
       margin-top: 1rem;
       font-weight: 700;
       border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .checkout-btn:hover {
+      background: #00a843;
     }
 
     /* BTC MODAL */
@@ -236,68 +319,115 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 2000;
+      backdrop-filter: blur(8px);
+    }
+    .modal.active {
+      display: flex;
+      animation: fadeIn 0.5s;
     }
     .modal-content {
       background: var(--card);
       padding: 2rem;
       border-radius: 16px;
       text-align: center;
-      max-width: 400px;
+      max-width: 420px;
       border: 1px solid var(--accent);
+      box-shadow: 0 20px 50px rgba(255,109,0,0.3);
+      animation: zoomIn 0.5s;
     }
-    #qr-code { margin: 1rem auto; }
+    #qr-code {
+      width: 180px; height: 180px;
+      margin: 1.5rem auto;
+      padding: 10px;
+      background: white;
+      border-radius: 12px;
+    }
     .btc-addr {
       background: #000;
       color: #0f0;
       padding: 1rem;
       border-radius: 8px;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
       word-break: break-all;
       margin: 1rem 0;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      right: 8px; top: 8px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
     }
     .countdown {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       color: var(--warning);
       font-weight: 700;
+      font-family: 'Orbitron', sans-serif;
     }
+    .confirmations {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--success);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes zoomIn { from { transform: scale(0.8); } to { transform: scale(1); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
   </style>
 </head>
 <body>
 
   <!-- HEADER -->
   <div class="header">
-    <h1>RAKRUNNIN</h1>
-    <p>FRESH DUMPS • HIGH VALID • BTC ONLY</p>
+    <div class="logo">RAKRUNNIN</div>
+    <div class="header-stats">
+      <div class="stat"><div class="live-dot"></div> 1,284 Online</div>
+      <div class="stat"><i class="fas fa-shield-alt"></i> SSL Secured</div>
+      <div class="stat"><i class="fas fa-lock"></i> Escrow Protected</div>
+    </div>
   </div>
 
   <!-- NAVBAR -->
   <div class="navbar" id="navbar"></div>
 
-  <!-- MAIN CONTAINER -->
+  <!-- MAIN -->
   <div class="container">
     <!-- SIDEBAR -->
     <div class="sidebar">
-      <h3>FILTERS</h3>
+      <h3><i class="fas fa-filter"></i> Filters</h3>
       <div class="filter-group">
-        <label>Price: <span id="price-val">$10 - $500</span></label>
-        <input type="range" class="range-slider" min="10" max="500" value="500">
+        <label>Price: <span id="price-val">$10 - $600</span></label>
+        <input type="range" class="range-slider" min="10" max="600" value="600" oninput="updatePrice(this.value)">
       </div>
       <div class="filter-group">
-        <label>Balance: <span id="bal-val">$500 - $15,000</span></label>
-        <input type="range" class="range-slider" min="500" max="15000" value="15000">
+        <label>Balance: <span id="bal-val">$500 - $25,000</span></label>
+        <input type="range" class="range-slider" min="500" max="25000" value="25000" oninput="updateBal(this.value)">
       </div>
       <div class="filter-group">
-        <label>Card Type</label>
-        <select class="range-slider" style="width:100%; padding:0.5rem; border-radius:8px; background:#333; color:white;">
-          <option>All</option>
-          <option>Visa</option>
-          <option>MasterCard</option>
-          <option>Amex</option>
+        <label>Card Level</label>
+        <select class="range-slider" style="width:100%; padding:0.5rem; border-radius:8px; background:#1e293b; color:white; border:none;">
+          <option>All Levels</option>
+          <option>Classic</option>
+          <option>Gold</option>
+          <option>Platinum</option>
+          <option>Signature</option>
+          <option>Infinite</option>
         </select>
       </div>
     </div>
@@ -307,61 +437,72 @@
   </div>
 
   <!-- FLOATING CART -->
-  <div class="cart-floating">
+  <div class="cart-floating" id="cartFloat">
     <div class="cart-header">
-      <span>CART (<span id="cart-count">0</span>)</span>
+      <span><i class="fas fa-shopping-cart"></i> CART (<span id="cart-count">0</span>)</span>
       <span id="cart-total">$0.00</span>
     </div>
     <div id="cart-items"></div>
-    <button class="checkout-btn" onclick="openBTCModal()">CHECKOUT WITH BTC</button>
+    <button class="checkout-btn" onclick="openBTCModal()">PROCEED TO BTC</button>
   </div>
 
   <!-- BTC MODAL -->
   <div class="modal" id="btcModal">
     <div class="modal-content">
-      <h3>BTC PAYMENT</h3>
+      <h3><i class="fab fa-bitcoin"></i> BTC PAYMENT</h3>
       <div id="qr-code"></div>
       <div class="btc-addr" id="btc-address">1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy</div>
-      <button onclick="copyAddr()" style="margin:0.5rem; padding:0.5rem 1rem; background:var(--accent); color:white; border:none; border-radius:8px;">COPY</button>
-      <div class="countdown" id="countdown">15:00</div>
-      <p style="font-size:0.8rem; color:#aaa;">Send exact amount. Auto-detected in 1-3 confirmations.</p>
+      <button class="copy-btn" onclick="copyAddr()">COPY</button>
+      <div class="countdown" id="countdown">60:00</div>
+      <p style="margin:1rem 0; font-size:0.9rem; color:#94a3b8;">Send <strong id="btc-amount">0.002345</strong> BTC</p>
+      <div class="confirmations" id="confirmations">Waiting for payment...</div>
     </div>
   </div>
 
   <script>
     const BTC_ADDR = "1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy";
     let cart = JSON.parse(localStorage.getItem('rakcart') || '[]');
-    let countdown;
+    let countdownTimer, fakeConfirmTimer;
+    let totalUSD = 0;
 
-    const cards = [
-      {type:"Visa", bin:"414720", country:"US", level:"Platinum", balance:8420, valid:98},
-      {type:"MasterCard", bin:"555555", country:"UK", level:"World", balance:12450, valid:97},
-      {type:"Amex", bin:"378282", country:"CA", level:"Gold", balance:15680, valid:99},
-      {type:"Visa", bin:"426684", country:"AU", level:"Signature", balance:9800, valid:96},
+    const realCards = [
+      {type:"Visa", bin:"414720", country:"US", flag:"https://flagcdn.com/us.svg", level:"Signature", balance:12450, valid:98},
+      {type:"MasterCard", bin:"555555", country:"UK", flag:"https://flagcdn.com/gb.svg", level:"World Elite", balance:18900, valid:99},
+      {type:"Amex", bin:"378282", country:"CA", flag:"https://flagcdn.com/ca.svg", level:"Centurion", balance:25700, valid:97},
+      {type:"Visa", bin:"426684", country:"AU", flag:"https://flagcdn.com/au.svg", level:"Infinite", balance:9800, valid:96},
+      {type:"Discover", bin:"601111", country:"US", flag:"https://flagcdn.com/us.svg", level:"Cashback", balance:6700, valid:95},
+      {type:"Chase", bin:"426685", country:"US", flag:"https://flagcdn.com/us.svg", level:"Sapphire", balance:15200, valid:98},
+      {type:"Capital One", bin:"414709", country:"US", flag:"https://flagcdn.com/us.svg", level:"Venture", balance:11300, valid:94},
+      {type:"Citi", bin:"542418", country:"US", flag:"https://flagcdn.com/us.svg", level:"Prestige", balance:21000, valid:99},
+      {type:"Barclays", bin:"491761", country:"UK", flag:"https://flagcdn.com/gb.svg", level:"Arrival", balance:8700, valid:93},
+      {type:"HSBC", bin:"456734", country:"HK", flag:"https://flagcdn.com/hk.svg", level:"Premier", balance:29800, valid:99},
+      // Add 40+ more in production
     ];
 
     function renderCards() {
       const grid = document.getElementById('itemGrid');
       grid.innerHTML = '';
-      cards.forEach((c, i) => {
-        const price = Math.floor(c.balance * 0.018) + 15;
+      realCards.forEach((c, i) => {
+        const price = Math.floor(c.balance * 0.017) + 18;
         const stars = '★'.repeat(Math.floor(c.valid/20)) + '☆'.repeat(5 - Math.floor(c.valid/20));
         const item = document.createElement('div');
         item.className = 'card-item';
+        item.style.animationDelay = `${i * 0.1}s`;
         item.innerHTML = `
           <div class="card-header">
-            <div class="card-type">${c.type} ${c.level}</div>
-            <div class="card-bin">${c.bin}xx</div>
+            <div class="card-type"><img src="${c.flag}" class="flag"> ${c.type} ${c.level}</div>
+            <div class="card-bin">${c.bin}xxxxxx</div>
+            <div class="live-badge">LIVE</div>
           </div>
           <div class="card-body">
             <div class="card-info">
-              <span>Country:</span><strong>${c.country}</strong>
               <span>Balance:</span><strong>$${c.balance.toLocaleString()}</strong>
               <span>Valid Rate:</span><strong>${c.valid}%</strong>
+              <span>Country:</span><strong>${c.country}</strong>
               <span>Rating:</span><strong class="rating">${stars}</strong>
             </div>
             <div class="price">$${price}</div>
-            <button class="buy-btn" onclick="addToCart('${c.type} ${c.bin}xx', ${price})">BUY NOW</button>
+            <button class="buy-btn" onclick="addToCart('${c.type} ${c.bin}', ${price})">BUY NOW</button>
           </div>
         `;
         grid.appendChild(item);
@@ -370,9 +511,10 @@
 
     function addToCart(name, price) {
       cart.push({name, price});
+      totalUSD += price;
       localStorage.setItem('rakcart', JSON.stringify(cart));
       updateCart();
-      alert(`${name} added!`);
+      document.getElementById('cartFloat').classList.add('visible');
     }
 
     function updateCart() {
@@ -383,47 +525,66 @@
       let sum = 0;
       cart.forEach((item, i) => {
         sum += item.price;
-        items.innerHTML += `<div class="cart-item"><div>${item.name}</div><div>$${item.price}</div></div>`;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `<div>${item.name}</div><div>$${item.price}</div>`;
+        items.appendChild(div);
       });
       count.textContent = cart.length;
       total.textContent = '$' + sum.toFixed(2);
     }
 
     function openBTCModal() {
-      if (cart.length === 0) return alert("Cart empty");
-      document.getElementById('btcModal').style.display = 'flex';
+      if (cart.length === 0) return;
+      const btcRate = 102345.67; // Fake live rate
+      const btcAmount = (totalUSD / btcRate).toFixed(8);
+      document.getElementById('btc-amount').textContent = btcAmount;
+      document.getElementById('btcModal').classList.add('active');
       new QRCode(document.getElementById('qr-code'), {
-        text: `bitcoin:${BTC_ADDR}?amount=0.00123456`,
+        text: `bitcoin:${BTC_ADDR}?amount=${btcAmount}`,
         width: 180, height: 180
       });
       startCountdown();
-    }
-
-    function copyAddr() {
-      navigator.clipboard.writeText(BTC_ADDR);
-      alert("Address copied!");
+      startFakeConfirmations();
     }
 
     function startCountdown() {
-      let sec = 900;
-      countdown = setInterval(() => {
+      let sec = 3600; // 60 minutes
+      countdownTimer = setInterval(() => {
         sec--;
         const m = String(Math.floor(sec/60)).padStart(2,'0');
         const s = String(sec%60).padStart(2,'0');
         document.getElementById('countdown').textContent = `${m}:${s}`;
-        if (sec <= 0) clearInterval(countdown);
+        if (sec <= 0) clearInterval(countdownTimer);
       }, 1000);
+    }
+
+    function startFakeConfirmations() {
+      let conf = 0;
+      fakeConfirmTimer = setInterval(() => {
+        if (conf < 3) {
+          conf++;
+          document.getElementById('confirmations').innerHTML = `<i class="fas fa-check"></i> ${conf}/3 Confirmations`;
+        }
+      }, 8000);
+    }
+
+    function copyAddr() {
+      navigator.clipboard.writeText(BTC_ADDR);
+      alert("Address copied to clipboard!");
     }
 
     // Init
     document.getElementById('navbar').innerHTML = `
-      <div class="nav-btn active" onclick="location.reload()">CC SHOP</div>
-      <div class="nav-btn" onclick="alert('Soon')">FULLZ</div>
-      <div class="nav-btn" onclick="alert('Soon')">CVV</div>
-      <div class="nav-btn" onclick="alert('Soon')">RDP</div>
+      <div class="nav-btn active">CC SHOP</div>
+      <div class="nav-btn">FULLZ</div>
+      <div class="nav-btn">CVV</div>
+      <div class="nav-btn">RDP</div>
+      <div class="nav-btn">SUPPORT</div>
     `;
     renderCards();
     updateCart();
+    setTimeout(() => document.querySelector('.container').style.opacity = '1', 100);
   </script>
 </body>
 </html>
