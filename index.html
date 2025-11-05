@@ -1,232 +1,520 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RAKRUNNIN — FULLY COMPLETE</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rak's Shop</title>
+
+  <!-- Tailwind Play CDN for quick prototyping -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{--p:#0066ff;--bg:#0a0a0a;--card:#111;--text:#fff;--border:#222;--glow:0 0 20px rgba(0,102,255,0.3);--tr:all .4s ease}
-    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-    .bar{position:fixed;top:0;left:0;width:100%;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;z-index:1000;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
-    .btn{background:var(--p);color:#fff;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;transition:var(--tr);box-shadow:var(--glow)}
-    .btn:hover{transform:scale(1.15);background:#0052cc}
-    .badge{position:absolute;top:-6px;right:-6px;background:#ff3333;color:#fff;font-size:.7rem;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-    .sidebar{position:fixed;left:0;top:0;width:280px;height:100%;background:var(--card);padding:80px 20px 20px;transform:translateX(-100%);transition:transform .5s;z-index:999;border-right:1px solid var(--border)}
-    .sidebar.active{transform:translateX(0)}
-    .logo{font-size:1.8rem;font-weight:900;text-align:center;margin-bottom:30px;color:var(--p)}
-    .nav{padding:14px 18px;margin:8px 0;border-radius:12px;background:#1a1a1a;cursor:pointer;transition:var(--tr);font-weight:600}
-    .nav:hover{background:var(--p);transform:translateX(8px);color:#000}
-    .page{display:none;padding-top:80px;opacity:0;transition:var(--tr)}
-    .page.active{display:block;opacity:1}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;padding:30px}
-    .card{background:var(--card);border-radius:16px;padding:20px;cursor:pointer;transition:var(--tr);border:1px solid var(--border);position:relative;overflow:hidden}
-    .card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.05),transparent);transition:var(--tr)}
-    .card:hover{transform:translateY(-12px);border-color:var(--p);box-shadow:var(--glow)}
-    .card:hover::before{left:100%}
-    .card img{width:100%;height:90px;object-fit:contain;margin-bottom:12px}
-    .card h3{color:var(--p);font-size:1.3rem;margin:10px 0}
-    .soon{color:#888;font-style:italic}
-    .detail{max-width:700px;margin:30px auto;padding:0 20px}
-    .dcard{background:var(--card);border-radius:20px;padding:35px;border:1px solid var(--border)}
-    .head{display:flex;gap:25px;margin-bottom:25px;align-items:center}
-    .head img{width:160px;height:110px;object-fit:contain}
-    .info h2{font-size:2rem;color:var(--p);margin-bottom:6px}
-    .tiers{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin:25px 0}
-    .tier{background:rgba(0,102,255,0.1);padding:16px;border-radius:14px;text-align:center;cursor:pointer;transition:var(--tr);border:2px solid transparent}
-    .tier.active,.tier:hover{background:var(--p);color:#000;border-color:#fff;transform:translateY(-4px)}
-    .control{display:flex;align-items:center;gap:12px;margin:20px 0}
-    .qbtn{background:var(--p);color:#fff;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer}
-    .toggle{display:flex;align-items:center;gap:12px;margin:20px 0}
-    .switch{position:relative;width:60px;height:32px;background:#333;border-radius:50px;cursor:pointer;transition:var(--tr)}
-    .switch.active{background:var(--p)}
-    .knob{position:absolute;top:4px;left:4px;width:24px;height:24px;background:#fff;border-radius:50%;transition:var(--tr)}
-    .switch.active .knob{transform:translateX(28px)}
-    .add{background:var(--p);color:#fff;padding:16px;border:none;border-radius:16px;font-size:1.2rem;font-weight:700;cursor:pointer;width:100%;margin-top:25px;transition:var(--tr)}
-    .add:hover{transform:translateY(-3px);box-shadow:var(--glow)}
-    .invoice{background:var(--card);padding:30px;border-radius:20px;text-align:center;margin:30px 0;border:1px dashed var(--p)}
-    .addr{background:rgba(0,102,255,0.1);padding:14px;border-radius:12px;font-family:monospace;font-size:1rem;word-break:break-all;margin:20px 0;position:relative}
-    .copy{position:absolute;right:10px;top:10px;background:var(--p);color:#fff;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:.8rem}
-    .cart-item{padding:12px 0;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center}
-    .cart-item:last-child{border-bottom:none}
-    .remove{color:#ff3333;cursor:pointer;font-weight:600}
-    @media(max-width:768px){.head{flex-direction:column;text-align:center}.tiers{grid-template-columns:1fr}}
+    /* Extra smoothness beyond Tailwind defaults */
+    :root {
+      --glass: rgba(255,255,255,0.04);
+      --glass-strong: rgba(255,255,255,0.06);
+      --accent: linear-gradient(90deg,#7c3aed,#06b6d4);
+    }
+
+    /* subtle backdrop blur */
+    .glass {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      backdrop-filter: blur(6px);
+    }
+
+    /* Smooth scroll & better font rendering */
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* Nice soft focus ring */
+    :focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(124,58,237,0.15);
+      border-radius: 8px;
+    }
+
+    /* Fancy product image gradient placeholder */
+    .img-placeholder {
+      background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(6,182,212,0.12));
+      border: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.85);
+      font-weight: 600;
+    }
+
+    /* Smooth fade & slide for modals */
+    .fade-in {
+      animation: fadeIn .28s cubic-bezier(.2,.9,.2,1) both;
+    }
+    .slide-left {
+      animation: slideLeft .28s cubic-bezier(.2,.9,.2,1) both;
+    }
+    .slide-up {
+      animation: slideUp .28s cubic-bezier(.2,.9,.2,1) both;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideLeft {
+      from { transform: translateX(12px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* small utility for subtle glass border when scrolled */
+    .scrolled {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.45);
+      backdrop-filter: blur(8px);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    }
   </style>
 </head>
-<body>
+<body class="bg-[#07060a] text-gray-200 font-sans antialiased">
 
-<div class="bar">
-  <div class="btn" onclick="toggleSidebar()">Menu</div>
-  <div class="btn" onclick="showPage('balance')">$</div>
-  <div class="btn" onclick="showPage('cart')">Cart <div class="badge" id="cartBadge">0</div></div>
-</div>
+  <!-- NAV -->
+  <header id="site-header" class="fixed w-full z-40 top-4 left-0 px-6">
+    <div class="max-w-6xl mx-auto flex items-center justify-between p-3 rounded-2xl glass transition-all duration-300">
+      <a href="#" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-cyan-400 flex items-center justify-center shadow-lg transform transition-transform duration-300 hover:scale-105">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="white" stroke-width="1.6" stroke-linecap="round"/><path d="M6 6h12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/><path d="M6 18h12" stroke="white" stroke-width="1.6" stroke-linecap="round" opacity=".85"/></svg>
+        </div>
+        <div>
+          <div class="text-lg font-semibold tracking-tight">Rak's Shop</div>
+          <div class="text-xs text-gray-400 -mt-0.5">A little boutique of products</div>
+        </div>
+      </a>
 
-<div class="sidebar" id="sidebar">
-  <div class="logo">RAKRUNNIN</div>
-  <div class="nav" onclick="showPage('home')">HOME</div>
-  <div class="nav" onclick="show showPage('balance')">ADD BALANCE</div>
-  <div class="nav" onclick="showPage('cart')">CART</div>
-</div>
+      <nav class="flex items-center gap-4">
+        <a href="#products" class="text-sm px-3 py-2 rounded-md hover:bg-white/3 transition-colors">Shop</a>
+        <a href="#about" class="text-sm px-3 py-2 rounded-md hover:bg-white/3 transition-colors">About</a>
 
-<!-- HOME -->
-<div id="home-page" class="page active">
-  <div class="grid" id="productGrid"></div>
-</div>
+        <button id="cart-btn" aria-label="Open cart" class="relative ml-2 px-3 py-2 rounded-md glass hover:scale-105 transition transform">
+          <svg class="w-5 h-5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-[#fb7185] text-xs px-2 py-0.5 rounded-full font-semibold">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
 
-<!-- PRODUCT DETAIL -->
-<div id="product-detail-page" class="page">
-  <div class="detail" id="detailContainer"></div>
-</div>
+  <!-- HERO -->
+  <main class="pt-32">
+    <section class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <div class="space-y-6">
+          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+            Rak's Shop — <span class="bg-clip-text text-transparent" style="background: var(--accent)">low-key collectible vibes</span>
+          </h1>
+          <p class="text-gray-400 max-w-xl">
+            A sleek prototype storefront — dark, smooth, and polished. Placeholder products, buttery UI, and a cart you can actually use. Built as a static mock so you can iterate fast.
+          </p>
 
-<!-- BALANCE -->
-<div id="balance-page" class="page">
-  <div class="detail">
-    <div class="dcard">
-      <h2>ADD BALANCE</h2>
-      <p>Minimum $25 to checkout</p>
-      <div class="tiers" id="balanceTiers"></div>
-      <button class="add" onclick="addBalance()">ADD TO CART</button>
+          <div class="flex gap-3">
+            <a href="#products" class="inline-flex items-center px-5 py-3 rounded-xl shadow-lg glass hover:scale-105 transition transform">
+              <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none"><path d="M3 12h18" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+              Shop Products
+            </a>
+            <a href="#about" class="inline-flex items-center px-4 py-3 rounded-xl border border-white/6 text-sm hover:brightness-110 transition">
+              About Rak's
+            </a>
+          </div>
+
+          <div class="mt-2 text-xs text-gray-500">
+            Tip: click a product to quick-view. Add items to the cart — they persist in your browser.
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-500 hover:scale-102">
+            <div class="w-full h-64 img-placeholder flex-col">
+              <div class="text-2xl">✨ Featured</div>
+              <div class="text-xs text-gray-300 mt-2">Product 1 — Spotlight</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="max-w-6xl mx-auto px-6 mt-12">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold">Products</h2>
+        <div class="text-sm text-gray-400">Showing <span id="product-count">6</span> items</div>
+      </div>
+
+      <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <!-- Product cards generated by JS -->
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="max-w-6xl mx-auto px-6 mt-14 mb-28">
+      <div class="glass p-6 rounded-2xl">
+        <h3 class="text-lg font-semibold">About this mock</h3>
+        <p class="text-gray-400 mt-2">
+          This is a static prototype: responsive, accessible, and intentionally built to feel like a real shop.
+          Replace product names, images, and prices with your real content when you’re ready.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- CART SIDEBAR -->
+  <aside id="cart" class="fixed top-0 right-0 h-full w-full md:w-96 max-w-full z-50 transform translate-x-full bg-[#06050a] shadow-2xl">
+    <div class="h-full flex flex-col">
+      <div class="p-6 flex items-center justify-between border-b border-white/5">
+        <div>
+          <div class="text-lg font-semibold">Your Cart</div>
+          <div class="text-sm text-gray-400">Items saved in your browser</div>
+        </div>
+        <button id="close-cart" aria-label="Close cart" class="p-2 rounded-md hover:bg-white/3 transition">
+          ✕
+        </button>
+      </div>
+
+      <div id="cart-items" class="p-6 space-y-4 overflow-auto flex-1">
+        <!-- items inserted here -->
+      </div>
+
+      <div class="p-6 border-t border-white/5">
+        <div class="flex items-center justify-between mb-4">
+          <div class="text-sm text-gray-400">Subtotal</div>
+          <div id="cart-subtotal" class="text-lg font-semibold">$0.00</div>
+        </div>
+        <div class="flex gap-3">
+          <button id="checkout-btn" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-400 font-medium shadow hover:brightness-105 transition">
+            Checkout
+          </button>
+          <button id="clear-cart" class="py-3 px-4 rounded-xl border border-white/6 text-sm hover:bg-white/3 transition">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- QUICK VIEW MODAL -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-6">
+    <div id="modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative max-w-3xl w-full rounded-2xl overflow-hidden glass shadow-2xl fade-in">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+        <div class="md:col-span-1">
+          <div id="modal-image" class="h-48 rounded-lg img-placeholder"></div>
+        </div>
+        <div class="md:col-span-2">
+          <div class="flex items-start justify-between">
+            <div>
+              <h4 id="modal-title" class="text-xl font-semibold">Product Title</h4>
+              <div id="modal-sku" class="text-xs text-gray-400 mt-1">SKU: -</div>
+            </div>
+            <button id="modal-close" class="text-gray-300 hover:text-white p-2">✕</button>
+          </div>
+
+          <p id="modal-desc" class="text-gray-400 mt-4">Product description will show here. Short, punchy, and enticing.</p>
+
+          <div class="mt-6 flex items-center gap-4">
+            <div class="text-2xl font-bold" id="modal-price">$0.00</div>
+            <button id="modal-add" class="ml-auto px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-cyan-400 font-medium shadow hover:brightness-105 transition">Add to cart</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- CART -->
-<div id="cart-page" class="page">
-  <div class="detail">
-    <div class="dcard">
-      <h2>YOUR CART</h2>
-      <div id="cartItems"></div>
-      <div style="font-size:1.5rem;font-weight:900;color:var(--p);margin:20px 0">
-        TOTAL: $<span id="totalPrice">0</span>
+  <!-- SUCCESS TOAST -->
+  <div id="toast" class="fixed right-6 bottom-6 z-60 hidden rounded-lg p-4 glass shadow transition">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-full bg-green-500/80 flex items-center justify-center">✓</div>
+      <div>
+        <div id="toast-title" class="font-semibold">Added to cart</div>
+        <div id="toast-sub" class="text-xs text-gray-300">Product 1 was added</div>
       </div>
-      <div id="invoice" style="display:none" class="invoice">
-        <h3>BTC PAYMENT</h3>
-        <div class="addr">1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy</div>
-        <button class="copy" onclick="copyBTC()">COPY</button>
-        <div id="countdown" style="font-size:1.8rem;color:var(--p);margin:20px 0">59:59</div>
-      </div>
-      <button class="add" onclick="generateInvoice()">GENERATE INVOICE</button>
     </div>
   </div>
-</div>
 
-<script>
-const BTC = "1NtpN3aPZowqEzX16E5cMUHQ16P9KHQtiy";
-let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-let currentProduct = null;
-let selectedTier = 0;
-let quantity = 1;
-let isNonVBV = false;
-let balanceAmount = 25;
+  <!-- SCRIPTS: small cart system (localStorage), modal, transitions -->
+  <script>
+    // PRODUCTS DATA (placeholder)
+    const PRODUCTS = [
+      { id: "p1", title: "Product 1", price: 49.00, sku: "RS-001", desc: "Signature item. Placeholder copy.", img: null },
+      { id: "p2", title: "Product 2", price: 32.50, sku: "RS-002", desc: "Collector-friendly style.", img: null },
+      { id: "p3", title: "Product 3", price: 99.00, sku: "RS-003", desc: "Premium mock product.", img: null },
+      { id: "p4", title: "Product 4", price: 15.00, sku: "RS-004", desc: "Affordable option.", img: null },
+      { id: "p5", title: "Product 5", price: 75.25, sku: "RS-005", desc: "Limited-run concept.", img: null },
+      { id: "p6", title: "Product 6", price: 22.00, sku: "RS-006", desc: "Everyday collectible.", img: null }
+    ];
 
-const products = [
-  {id:'visa',name:'Visa',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png',tiers:[{price:12,balance:114},{price:35,balance:850},{price:75,balance:2500},{price:150,balance:5200},{price:300,balance:8200},{price:500,balance:10000}]},
-  {id:'mastercard',name:'MasterCard',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/800px-Mastercard-logo.svg.png',tiers:products[0].tiers},
-  {id:'discover',name:'Discover',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Discover_Card_logo.svg/800px-Discover_Card_logo.svg.png',tiers:products[0].tiers},
-  {id:'amex',name:'Amex',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/American_Express_logo.svg/800px-American_Express_logo.svg.png',tiers:products[0].tiers},
-  {id:'chase',name:'Chase',logo:'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Chase_logo_2021.svg/800px-Chase_logo_2021.svg.png',tiers:products[0].tiers},
-  {id:'fullz',name:'Fullz',logo:'https://img.icons8.com/color/100/user.png',comingSoon:true},
-  {id:'accounts',name:'Accounts',logo:'https://img.icons8.com/color/100/shop.png',comingSoon:true}
-];
+    // Utilities
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
 
-// UI
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('active')}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));setTimeout(()=>{document.getElementById(id+'-page').classList.add('active')},50)}
-function updateBadge(){document.getElementById('cartBadge').textContent=cart.length}
-function notify(msg){const n=document.createElement('div');n.textContent=msg;n.style.cssText='position:fixed;bottom:30px;right:30px;background:var(--p);color:#fff;padding:14px 20px;border-radius:12px;z-index:1000;font-weight:700;box-shadow:var(--glow)';document.body.appendChild(n);setTimeout(()=>n.remove(),2500)}
+    // Render product grid
+    const grid = $('#products-grid');
+    function renderProducts() {
+      grid.innerHTML = '';
+      PRODUCTS.forEach((p) => {
+        const card = document.createElement('article');
+        card.className = "group bg-[#08060a] rounded-2xl p-4 transition-transform duration-300 hover:-translate-y-1 shadow-lg";
+        card.innerHTML = `
+          <button data-id="${p.id}" class="w-full text-left focus:outline-none">
+            <div class="w-full h-44 rounded-lg img-placeholder overflow-hidden transition-all duration-400 group-hover:scale-102">
+              <div class="flex flex-col items-center justify-center h-full">
+                <div class="text-lg">${p.title}</div>
+                <div class="text-xs text-gray-300 mt-2">$${p.price.toFixed(2)}</div>
+              </div>
+            </div>
+          </button>
+          <div class="mt-4 flex items-center justify-between">
+            <div>
+              <div class="font-semibold">${p.title}</div>
+              <div class="text-xs text-gray-400">${p.sku}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button data-id="${p.id}" class="add-btn px-3 py-1 rounded-lg glass text-sm hover:scale-105 transition">Add</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
 
-// HOME
-function renderHome(){
-  const grid=document.getElementById('productGrid');grid.innerHTML='';
-  products.forEach(p=>{
-    const card=document.createElement('div');card.className='card';
-    if(p.comingSoon){
-      card.innerHTML=`<img src="${p.logo}"><h3>${p.name}</h3><p class="soon">COMING SOON</p>`;
-    }else{
-      card.onclick=()=>openProduct(p);
-      card.innerHTML=`<img src="${p.logo}"><h3>${p.name}</h3><p>$${p.tiers[0].price}+</p>`;
+      $('#product-count').textContent = PRODUCTS.length;
     }
-    grid.appendChild(card);
-  });
-}
 
-// PRODUCT
-function openProduct(p){
-  currentProduct=p;selectedTier=0;quantity=1;isNonVBV=false;
-  document.getElementById('detailContainer').innerHTML=`
-    <div class="dcard">
-      <div class="head"><img src="${p.logo}"><div class="info"><h2>${p.name}</h2><p>Instant • High Success</p></div></div>
-      <div class="tiers" id="tierSelector"></div>
-      <div class="control"><div class="qbtn" onclick="changeQty(-1)">-</div><div id="qtyDisplay">1</div><div class="qbtn" onclick="changeQty(1)">+</div></div>
-      <div class="toggle"><span>Non-VBV</span><div class="switch" onclick="toggleVBV()"><div class="knob"></div></div></div>
-      <button class="add" onclick="addToCart()">ADD TO CART</button>
-    </div>`;
-  renderTiers();showPage('product-detail');
-}
-function renderTiers(){
-  const sel=document.getElementById('tierSelector');sel.innerHTML='';
-  currentProduct.tiers.forEach((t,i)=>{
-    const btn=document.createElement('div');btn.className='tier';if(i===selectedTier)btn.classList.add('active');
-    btn.innerHTML=`<div>$${t.price}</div><small>≈ $${t.balance}</small>`;
-    btn.onclick=()=>{selectedTier=i;document.querySelectorAll('.tier').forEach(b=>b.classList.remove('active'));btn.classList.add('active')};
-    sel.appendChild(btn);
-  });
-}
-function changeQty(d){quantity=Math.max(1,quantity+d);document.getElementById('qtyDisplay').textContent=quantity}
-function toggleVBV(){isNonVBV=!isNonVBV;document.querySelector('.switch').classList.toggle('active')}
-function addToCart(){
-  const t=currentProduct.tiers[selectedTier];
-  cart.push({name:`${currentProduct.name} $${t.price} ×${quantity}${isNonVBV?' (Non-VBV)':''}`,price:t.price*quantity});
-  localStorage.setItem('cart',JSON.stringify(cart));updateBadge();notify('Added!');
-}
+    // CART logic
+    const CART_KEY = 'raks_cart_v1';
+    let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}');
 
-// BALANCE
-function renderBalance(){
-  const bt=document.getElementById('balanceTiers');bt.innerHTML='';
-  [25,50,100,200].forEach(a=>{
-    const btn=document.createElement('div');btn.className='tier';if(a===balanceAmount)btn.classList.add('active');
-    btn.innerHTML=`<div>$${a}</div>`;
-    btn.onclick=()=>{balanceAmount=a;document.querySelectorAll('#balanceTiers .tier').forEach(b=>b.classList.remove('active'));btn.classList.add('active')};
-    bt.appendChild(btn);
-  });
-}
-function addBalance(){
-  cart=cart.filter(i=>!i.name.includes('Balance'));
-  cart.push({name:`Balance $${balanceAmount}`,price:balanceAmount});
-  localStorage.setItem('cart',JSON.stringify(cart));updateBadge();notify(`$${balanceAmount} added!`);
-}
+    function saveCart() {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      updateCartUI();
+    }
 
-// CART
-function renderCart(){
-  const items=document.getElementById('cartItems');items.innerHTML='';
-  let total=0;
-  cart.forEach((item,i)=>{
-    total+=item.price;
-    const div=document.createElement('div');div.className='cart-item';
-    div.innerHTML=`<span>${item.name}</span><span>$${item.price} <span class="remove" onclick="removeItem(${i})">×</span></span>`;
-    items.appendChild(div);
-  });
-  document.getElementById('totalPrice').textContent=total;
-}
-function removeItem(i){cart.splice(i,1);localStorage.setItem('cart',JSON.stringify(cart));renderCart();updateBadge()}
-function generateInvoice(){
-  if(cart.length===0)return notify('Cart empty');
-  document.getElementById('invoice').style.display='block';
-  startCountdown();
-}
-function copyBTC(){navigator.clipboard.writeText(BTC);notify('Copied!')}
-function startCountdown(){
-  let s=3600;
-  const int=setInterval(()=>{
-    s--;const m=Math.floor(s/60),sec=s%60;
-    document.getElementById('countdown').textContent=`${m}:${sec.toString().padStart(2,'0')}`;
-    if(s<=0)clearInterval(int);
-  },1000);
-}
+    function addToCart(productId, qty = 1) {
+      cart[productId] = (cart[productId] || 0) + qty;
+      saveCart();
+      showToast('Added to cart', PRODUCTS.find(p => p.id === productId).title);
+    }
 
-// INIT
-renderHome();renderBalance();renderCart();updateBadge();showPage('home');
-</script>
+    function removeFromCart(productId) {
+      delete cart[productId];
+      saveCart();
+    }
+
+    function clearCart() {
+      cart = {};
+      saveCart();
+    }
+
+    function cartSubtotal() {
+      return Object.entries(cart).reduce((sum, [id, qty]) => {
+        const product = PRODUCTS.find(p => p.id === id);
+        if (!product) return sum;
+        return sum + product.price * qty;
+      }, 0);
+    }
+
+    function updateCartUI() {
+      const itemsWrap = $('#cart-items');
+      itemsWrap.innerHTML = '';
+      const entries = Object.entries(cart);
+      if (entries.length === 0) {
+        itemsWrap.innerHTML = `<div class="text-gray-400">Your cart is empty — add something cool.</div>`;
+      } else {
+        entries.forEach(([id, qty]) => {
+          const p = PRODUCTS.find(x => x.id === id);
+          if (!p) return;
+          const row = document.createElement('div');
+          row.className = "flex items-center gap-4";
+          row.innerHTML = `
+            <div class="w-14 h-14 rounded-md img-placeholder flex-shrink-0">${p.title.split(' ')[1] || 'P'}</div>
+            <div class="flex-1">
+              <div class="font-semibold">${p.title}</div>
+              <div class="text-xs text-gray-400">SKU: ${p.sku}</div>
+              <div class="text-xs text-gray-400 mt-1">$${p.price.toFixed(2)} × ${qty} = <span class="font-medium">$${(p.price*qty).toFixed(2)}</span></div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="dec px-2 py-1 rounded-md border border-white/6" data-id="${id}">−</button>
+              <div class="px-2">${qty}</div>
+              <button class="inc px-2 py-1 rounded-md border border-white/6" data-id="${id}">+</button>
+              <button class="ml-2 text-sm text-red-400 remove" data-id="${id}">Remove</button>
+            </div>
+          `;
+          itemsWrap.appendChild(row);
+        });
+      }
+
+      // subtotal & cart count
+      $('#cart-subtotal').textContent = `$${cartSubtotal().toFixed(2)}`;
+      const totalCount = Object.values(cart).reduce((a,b) => a+b, 0);
+      $('#cart-count').textContent = totalCount;
+    }
+
+    // TOAST
+    let toastTimer;
+    function showToast(title, sub) {
+      const toast = $('#toast');
+      $('#toast-title').textContent = title;
+      $('#toast-sub').textContent = sub || '';
+      toast.classList.remove('hidden');
+      toast.classList.add('fade-in', 'slide-left');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('fade-in', 'slide-left');
+      }, 1800);
+    }
+
+    // MODAL
+    function openModal(product) {
+      $('#modal-title').textContent = product.title;
+      $('#modal-sku').textContent = `SKU: ${product.sku}`;
+      $('#modal-price').textContent = `$${product.price.toFixed(2)}`;
+      $('#modal-desc').textContent = product.desc;
+      $('#modal').classList.remove('hidden');
+      $('#modal').classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      // attach id to add button
+      $('#modal-add').dataset.id = product.id;
+    }
+    function closeModal() {
+      $('#modal').classList.add('hidden');
+      $('#modal').classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    // CART SIDEBAR open/close
+    function openCart() {
+      $('#cart').style.transform = 'translateX(0)';
+      document.body.style.overflow = 'hidden';
+      // small focus
+      $('#close-cart').focus();
+    }
+    function closeCart() {
+      $('#cart').style.transform = 'translateX(100%)';
+      document.body.style.overflow = '';
+    }
+
+    // Event delegation
+    document.addEventListener('click', (e) => {
+      // product card click -> open modal
+      const btn = e.target.closest('[data-id]');
+      if (btn && btn.matches('button') && btn.parentElement && btn.parentElement.matches('article *') ) {
+        const pid = btn.dataset.id;
+        const product = PRODUCTS.find(p => p.id === pid);
+        if (product) openModal(product);
+        return;
+      }
+
+      // add buttons
+      if (e.target.matches('.add-btn')) {
+        const pid = e.target.dataset.id;
+        addToCart(pid, 1);
+        return;
+      }
+
+      if (e.target.id === 'modal-add') {
+        const pid = e.target.dataset.id;
+        addToCart(pid, 1);
+        closeModal();
+        return;
+      }
+
+      if (e.target.id === 'modal-close' || e.target.id === 'modal-backdrop') {
+        closeModal();
+        return;
+      }
+
+      if (e.target.id === 'cart-btn') {
+        openCart();
+        return;
+      }
+      if (e.target.id === 'close-cart') {
+        closeCart();
+        return;
+      }
+
+      // cart item controls
+      if (e.target.matches('.inc')) {
+        const id = e.target.dataset.id;
+        cart[id] = (cart[id] || 0) + 1;
+        saveCart();
+        return;
+      }
+      if (e.target.matches('.dec')) {
+        const id = e.target.dataset.id;
+        cart[id] = Math.max(0, (cart[id] || 0) - 1);
+        if (cart[id] === 0) delete cart[id];
+        saveCart();
+        return;
+      }
+      if (e.target.matches('.remove')) {
+        removeFromCart(e.target.dataset.id);
+        return;
+      }
+
+      // clear cart
+      if (e.target.id === 'clear-cart') {
+        clearCart();
+        return;
+      }
+
+      // checkout (fake)
+      if (e.target.id === 'checkout-btn') {
+        if (Object.keys(cart).length === 0) {
+          showToast('Cart empty', 'Add something first');
+          return;
+        }
+        // Simulate checkout dialog
+        const total = cartSubtotal().toFixed(2);
+        const confirmed = confirm(`Fake checkout — total $${total}. Click OK to "place order".`);
+        if (confirmed) {
+          clearCart();
+          closeCart();
+          showToast('Order placed', 'Thanks — this was a mock checkout.');
+        }
+        return;
+      }
+    });
+
+    // keyboard: Esc to close modals
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (!$('#modal').classList.contains('hidden')) closeModal();
+        if ($('#cart').style.transform === 'translateX(0)') closeCart();
+      }
+    });
+
+    // when header area should gain small shadow on scroll
+    window.addEventListener('scroll', () => {
+      const header = $('#site-header > div');
+      if (window.scrollY > 12) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    });
+
+    // startup
+    (function init(){
+      renderProducts();
+      updateCartUI();
+
+      // attach product click handlers (card button opens modal)
+      document.querySelectorAll('#products-grid article button[data-id]').forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+          const pid = btn.dataset.id;
+          const product = PRODUCTS.find(p => p.id === pid);
+          if (product) openModal(product);
+        });
+      });
+    })();
+
+    // expose a tiny dev helper (optional)
+    window.RAKS = {
+      PRODUCTS, cart, addToCart, clearCart
+    };
+  </script>
+
 </body>
 </html>
